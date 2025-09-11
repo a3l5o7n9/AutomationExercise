@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "user_id": "1",
+      "username": "Tester1",
+      "email": "tester1@goo.com",
+      "title": "Mr",
+      "password": "Test123!",
+      "dob_day": "9",
+      "dob_month": "April",
+      "dob_year": "1993",
+      "first_name": "Al",
+      "last_name": "Paz",
+      "company": "A.P Testing",
+      "address1": "Abcdef",
+      "address2": "Ghijkl",
+      "country": "Israel",
+      "state": "Israel",
+      "city": "TA",
+      "zipcode": "1234567",
+      "mobile_number": "0123456789"
+    },
+    {
+      "user_id": "2",
+      "username": "Tester2",
+      "email": "tester2@goo.com",
+      "title": "Mr",
+      "password": "Test123!",
+      "dob_day": "1",
+      "dob_month": "January",
+      "dob_year": "1996",
+      "first_name": "Al",
+      "last_name": "Paz",
+      "company": "A.P Testing",
+      "address1": "Abcdef",
+      "address2": "Ghijkl",
+      "country": "Israel",
+      "state": "Israel",
+      "city": "Tel Aviv",
+      "zipcode": "1234567",
+      "mobile_number": "0123456789"
+    }
+  ]
+}
