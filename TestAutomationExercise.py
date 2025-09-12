@@ -314,25 +314,27 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.product_details.get_product_brand_element().is_displayed())
 
     def test_search_product(self):
+        target_product_name = 'tshirt'
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
         self.assertEqual(self.wd.current_url, f'{self.base_url}products')
-        shirts_names_list = []
+        target_products_names_list = []
         all_products_list = self.products.features_items.get_features_products_list_items()
         for i in range(0, len(all_products_list)):
             product_name = self.products.features_items.get_specific_product_name_by_index(i)
-            if 'tshirt' in product_name:
-                shirts_names_list.append(product_name)
-        self.products.set_search_box_value('tshirt')
+            if target_product_name in product_name.replace(' ', '').replace('-', '').lower():
+                target_products_names_list.append(product_name)
+        self.products.set_search_box_value(target_product_name)
         self.products.click_search_submit_button()
         self.assertEqual(self.products.features_items.get_featured_items_header().text, 'SEARCHED PRODUCTS')
         filtered_shirts_names_list = []
         filtered_products_list = self.products.features_items.get_features_products_list_items()
         for i in range(0, len(filtered_products_list)):
             product_name = self.products.features_items.get_specific_product_name_by_index(i)
-            if 'tshirt' in product_name:
+            if target_product_name in product_name.replace(' ', '').replace('-', '').lower():
                 filtered_shirts_names_list.append(product_name)
-        self.assertEqual(shirts_names_list, filtered_shirts_names_list)
+        self.assertEqual(len(filtered_products_list), len(target_products_names_list))
+        self.assertEqual(target_products_names_list, filtered_shirts_names_list)
 
     def test_verify_subscription_in_home_page(self):
         self.assertTrue(self.home.get_slider_element().is_displayed())
@@ -800,7 +802,7 @@ class TestAutomationExercise(TestCase):
         all_products_list = self.products.features_items.get_features_products_list_items()
         for j in range(0, len(all_products_list)):
             product_name = self.products.features_items.get_specific_product_name_by_index(j)
-            if target_product_name in product_name.replace(' ', '').replace('-', ''):
+            if target_product_name in product_name.replace(' ', '').replace('-', '').lower():
                 category_products_names_list.append(product_name)
         self.products.set_search_box_value(target_product_name)
         self.products.click_search_submit_button()
@@ -809,13 +811,12 @@ class TestAutomationExercise(TestCase):
         filtered_products_list = self.products.features_items.get_features_products_list_items()
         for j in range(0, len(filtered_products_list)):
             product_name = self.products.features_items.get_specific_product_name_by_index(j)
-            if target_product_name in product_name.replace('-', '').replace(' ', ''):
+            if target_product_name in product_name.replace('-', '').replace(' ', '').lower():
                 filtered_products_names_list.append(product_name)
-        self.assertEqual(len(category_products_names_list), len(filtered_products_names_list))
-        self.wd.execute_script('arguments[0].scrollIntoView();', filtered_products_list[j])
-        self.ac.move_to_element(self.products.features_items.get_specific_product_element_by_index(j)).perform()
-        self.products.features_items.click_specific_product_add_to_cart_by_index(j)
-        self.cart_modal.click_continue_in_modal()
+                self.wd.execute_script('arguments[0].scrollIntoView();', filtered_products_list[j])
+                self.ac.move_to_element(self.products.features_items.get_specific_product_element_by_index(j)).perform()
+                self.products.features_items.click_specific_product_add_to_cart_by_index(j)
+                self.cart_modal.click_continue_in_modal()
         self.assertEqual(len(category_products_names_list), len(filtered_products_names_list))
         self.products.navbar.click_navbar_item('Cart')
         self.assertTrue(self.cart.cart_contents.get_cart_contents_table().is_displayed())
@@ -823,7 +824,6 @@ class TestAutomationExercise(TestCase):
         cart_products_names_list = []
         for cp in range(0, len(cart_products_list)):
             cart_product_name = self.cart.cart_contents.get_specific_cart_product_name_by_index(cp)
-            print(cart_product_name)
             cart_products_names_list.append(cart_product_name)
         self.assertEqual(len(cart_products_list), len(cart_products_names_list))
         self.assertEqual(len(cart_products_names_list), len(filtered_products_names_list))
