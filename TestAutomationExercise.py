@@ -5,7 +5,7 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
-from user import User
+from object_classes.user import User
 import json
 
 from page_classes.cart_modal import CartModal
@@ -42,6 +42,7 @@ class TestAutomationExercise(TestCase):
         self.options.set_preference('browser.download.dir', self.download_path)
         self.options.set_preference('browser.download.manager.showWhenStarting', False)
         self.options.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/plain')
+        self.options.add_argument("--headless")
         self.base_url = 'https://automationexercise.com/'
         self.wd = WebDriver(self.options)
         self.wd.get(self.base_url)
