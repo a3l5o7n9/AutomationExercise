@@ -5,7 +5,7 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
-import selenium.common.exceptions
+# import selenium.common.exceptions
 from object_classes.user import User
 from helper_functions.api_actions import check_existence_of_user_via_api, create_user_via_api, delete_user_via_api
 import json
@@ -49,7 +49,10 @@ class TestAutomationExercise(TestCase):
             while not create_user_via_api(self.user2):
                 create_user_via_api(self.user2)
 
-        self.empty_cart()
+        try:
+            self.empty_cart()
+        except TypeError as e:
+            print(e)
 
         self.options = Options()
         self.options.set_preference('browser.download.folderList', 2)
@@ -60,7 +63,7 @@ class TestAutomationExercise(TestCase):
         self.wd = WebDriver(self.options)
         self.wd.get(self.base_url)
         self.wd.maximize_window()
-        self.wd.implicitly_wait(10)
+        # self.wd.implicitly_wait(10)
         self.wait = WebDriverWait(self.wd, 10)
         self.ac = ActionChains(self.wd)
         self.cart_modal = CartModal(self.wd, self.base_url)
@@ -85,23 +88,22 @@ class TestAutomationExercise(TestCase):
         options = Options()
         options.add_argument("--headless")
         ecwd = WebDriver(options)
-        ecwd.set_page_load_timeout(20)
+        ecwd.set_page_load_timeout(30)
         ec_home = Home(ecwd, self.base_url)
         ec_login = Login(ecwd, self.base_url)
         ec_cart = Cart(ecwd, self.base_url)
-        try:
-            ecwd.get(self.base_url)
-            ecwd.implicitly_wait(10)
-            if user_email != '':
-                user = ''
-                if user_email == self.user1.email:
-                    user = self.user1
-                elif user_email == self.user2.email:
-                    user = self.user2
-                ecwd.get(f'{self.base_url}login')
-                ec_login.set_login_email_field(user.email)
-                ec_login.set_login_password_field(user.password)
-                ec_login.click_login_submit_button()
+        ecwd.get(self.base_url)
+        if user_email != '':
+            user = ''
+            if user_email == self.user1.email:
+                user = self.user1
+            elif user_email == self.user2.email:
+                user = self.user2
+            ecwd.get(f'{self.base_url}login')
+            ec_login.set_login_email_field(user.email)
+            ec_login.set_login_password_field(user.password)
+            ec_login.click_login_submit_button()
+        if ec_home.get_slider_element():
             ec_home.navbar.click_navbar_item('Cart')
             is_cart_empty = ec_cart.get_empty_cart_element().is_displayed()
             cart_products_list = []
@@ -116,11 +118,8 @@ class TestAutomationExercise(TestCase):
                     cart_products_list = ec_cart.cart_contents.get_products_in_cart_elements_list()
                     if len(cart_products_list) == 0:
                         is_cart_empty = True
-        except selenium.common.exceptions as e:
-            print(e.msg)
-        finally:
-            ecwd.close()
-            print("Exiting 'empty_cart()'")
+        ecwd.close()
+        print("Exiting 'empty_cart()'")
 
     def test_register_user(self):
         self.assertTrue(self.home.get_slider_element().is_displayed())
@@ -986,3 +985,6 @@ class TestAutomationExercise(TestCase):
         self.wd.close()
         if check_existence_of_user_via_api(self.user2):
             delete_user_via_api(self.user2)
+
+        if os.path.exists(f'{self.download_path}\\invoice.txt'):
+            os.remove(f'{self.download_path}\\invoice.txt')

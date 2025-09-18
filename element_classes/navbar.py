@@ -19,6 +19,8 @@ class NavBar(BaseElement):
 
     def get_navbar_items(self):
         header = self.get_header()
+        # if not header:
+        #     print('Something went wrong!')
         return header.find_elements(By.XPATH, ".//ul[@class='nav navbar-nav']/li/a")
 
     def click_logo(self):

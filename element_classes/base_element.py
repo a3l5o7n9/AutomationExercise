@@ -10,7 +10,6 @@ class BaseElement:
         self.wd = wd
         self.wait = WebDriverWait(self.wd, 10)
 
-
     def is_page_loaded(self):
         page_ready_state = self.wd.execute_script("return document.readyState;")
         return page_ready_state == 'complete'
