@@ -5,7 +5,9 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
+import selenium.common.exceptions
 from object_classes.user import User
+from helper_functions.api_actions import check_existence_of_user_via_api, create_user_via_api, delete_user_via_api
 import json
 
 from page_classes.cart_modal import CartModal
@@ -37,13 +39,24 @@ class TestAutomationExercise(TestCase):
         self.user1 = User(self.users_data[0])
         self.user2 = User(self.users_data[1])
 
+        self.base_url = 'https://automationexercise.com/'
+
+        if check_existence_of_user_via_api(self.user1):
+            while not delete_user_via_api(self.user1):
+                delete_user_via_api(self.user1)
+
+        if not check_existence_of_user_via_api(self.user2):
+            while not create_user_via_api(self.user2):
+                create_user_via_api(self.user2)
+
+        self.empty_cart()
+
         self.options = Options()
         self.options.set_preference('browser.download.folderList', 2)
         self.options.set_preference('browser.download.dir', self.download_path)
         self.options.set_preference('browser.download.manager.showWhenStarting', False)
         self.options.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/plain')
-        self.options.add_argument("--headless")
-        self.base_url = 'https://automationexercise.com/'
+        # self.options.add_argument("--headless")
         self.wd = WebDriver(self.options)
         self.wd.get(self.base_url)
         self.wd.maximize_window()
@@ -67,103 +80,18 @@ class TestAutomationExercise(TestCase):
         self.payment = Payment(self.wd, self.base_url)
         self.payment_done = PaymentDone(self.wd, self.base_url)
 
-    def check_existence_of_user(self, user_email):
-        options = Options()
-        options.add_argument("--headless")
-        ceutwd = WebDriver(options)
-        ceutwd.implicitly_wait(10)
-        user = ''
-        if user_email == self.user1.email:
-            user = self.user1
-        elif user_email == self.user2.email:
-            user = self.user2
-        ceut_home = Home(ceutwd, self.base_url)
-        ceut_login = Login(ceutwd, self.base_url)
-        does_user_exist = False
-        try:
-            ceutwd.get(self.base_url)
-            ceut_home.navbar.click_navbar_item('Signup / Login')
-            ceut_login.set_login_email_field(user.email)
-            ceut_login.set_login_password_field(user.password)
-            ceut_login.click_login_submit_button()
-            does_user_exist = ceutwd.current_url == f'{self.base_url}'
-        finally:
-            ceutwd.close()
-            return does_user_exist
-
-    def create_user_tester2(self):
-        options = Options()
-        options.add_argument("--headless")
-        cuwd = WebDriver(options)
-        cuwd.implicitly_wait(10)
-        try:
-            cuwd.get(self.base_url)
-            cu_home = Home(cuwd, self.base_url)
-            cu_login = Login(cuwd, self.base_url)
-            cu_signup = Signup(cuwd, self.base_url)
-            cu_account_created = AccountCreated(cuwd, self.base_url)
-            cu_home.navbar.click_navbar_item('Signup / Login')
-            cu_login.set_signup_name_field(self.user2.username)
-            cu_login.set_signup_email_field(self.user2.email)
-            cu_login.click_signup_submit_button()
-            cu_signup.select_gender_title(self.user2.title)
-            cu_signup.set_name_field(self.user2.username)
-            cu_signup.set_email_field(self.user2.email)
-            cu_signup.set_password_field(self.user2.password)
-            cu_signup.select_dob_day_value(self.user2.dob_day)
-            cu_signup.select_dob_month_value(self.user2.dob_month)
-            cu_signup.select_dob_year_value(self.user2.dob_year)
-            cu_signup.click_newsletter_checkbox()
-            cu_signup.click_opt_in_checkbox()
-            cu_signup.set_first_name_field(self.user2.first_name)
-            cu_signup.set_last_name_field(self.user2.last_name)
-            cu_signup.set_company_field(self.user2.company)
-            cu_signup.set_address1_field(self.user2.address1)
-            cu_signup.set_address2_field(self.user2.address2)
-            cu_signup.select_country_value(self.user2.country)
-            cu_signup.set_state_field(self.user2.state)
-            cu_signup.set_city_field(self.user2.city)
-            cu_signup.set_zipcode_field(self.user2.zipcode)
-            cu_signup.set_mobile_number_field(self.user2.mobile_number)
-            cu_signup.click_submit_button()
-            cu_account_created.click_continue_button()
-            cu_home.navbar.click_navbar_item('Logout')
-        finally:
-            cuwd.close()
-
-    def delete_user(self, user_email):
-        options = Options()
-        options.add_argument("--headless")
-        duwd = WebDriver(options)
-        duwd.implicitly_wait(10)
-        du_home = Home(duwd, self.base_url)
-        du_login = Login(duwd, self.base_url)
-        du_account_deleted = AccountDeleted(duwd, self.base_url)
-        user = ''
-        if user_email == self.user1.email:
-            user = self.user1
-        elif user_email == self.user2.email:
-            user = self.user2
-        try:
-            duwd.get(f'{self.base_url}login')
-            du_login.set_login_email_field(user.email)
-            du_login.set_login_password_field(user.password)
-            du_login.click_login_submit_button()
-            du_home.navbar.click_navbar_item('Delete Account')
-            du_account_deleted.click_continue_button()
-        finally:
-            duwd.close()
-
     def empty_cart(self, user_email = ''):
+        print("Entered 'empty_cart()'")
         options = Options()
         options.add_argument("--headless")
         ecwd = WebDriver(options)
+        ecwd.set_page_load_timeout(20)
         ec_home = Home(ecwd, self.base_url)
         ec_login = Login(ecwd, self.base_url)
         ec_cart = Cart(ecwd, self.base_url)
-        ecwd.get(self.base_url)
-        ecwd.implicitly_wait(10)
         try:
+            ecwd.get(self.base_url)
+            ecwd.implicitly_wait(10)
             if user_email != '':
                 user = ''
                 if user_email == self.user1.email:
@@ -188,12 +116,13 @@ class TestAutomationExercise(TestCase):
                     cart_products_list = ec_cart.cart_contents.get_products_in_cart_elements_list()
                     if len(cart_products_list) == 0:
                         is_cart_empty = True
+        except selenium.common.exceptions as e:
+            print(e.msg)
         finally:
             ecwd.close()
+            print("Exiting 'empty_cart()'")
 
     def test_register_user(self):
-        if self.check_existence_of_user(self.user1.email):
-            self.delete_user(self.user1.email)
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.assertTrue(self.login.get_signup_form_header().is_displayed())
@@ -229,8 +158,6 @@ class TestAutomationExercise(TestCase):
         self.account_deleted.click_continue_button()
 
     def test_login_with_correct_credentials(self):
-        if not self.check_existence_of_user(self.user2.email):
-            self.create_user_tester2()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.assertTrue(self.login.get_login_form_header().is_displayed())
@@ -253,8 +180,6 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.login.get_login_error_element().is_displayed())
 
     def test_logout_user(self):
-        if not self.check_existence_of_user(self.user2.email):
-            self.create_user_tester2()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.assertTrue(self.login.get_login_form_header().is_displayed())
@@ -264,11 +189,9 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user2.username}')
         self.home.navbar.click_navbar_item('Logout')
         self.assertEqual(self.wd.current_url, f'{self.base_url}login')
-        self.delete_user(self.user2.email)
+        # self.delete_user(self.user2.email)
 
     def test_register_user_with_existing_email(self):
-        if not self.check_existence_of_user(self.user2.email):
-            self.create_user_tester2()
         username = 'Tester3'
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
@@ -277,7 +200,7 @@ class TestAutomationExercise(TestCase):
         self.login.set_signup_email_field(self.user2.email)
         self.login.click_signup_submit_button()
         self.assertTrue(self.login.get_signup_error_element().is_displayed())
-        self.delete_user(self.user2.email)
+        # self.delete_user(self.user2.email)
 
     def test_contact_us_form(self):
         self.assertTrue(self.home.get_slider_element().is_displayed())
@@ -355,7 +278,6 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.cart.subscription.get_subscribe_success_message_element().is_displayed())
 
     def test_add_products_to_cart(self):
-        self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
         product1_id = self.products.features_items.get_product_id_by_index(0)
@@ -396,7 +318,6 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(product2_total_price_str, cart_product2_total_price)
 
     def test_product_quantity_in_cart(self):
-        self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         product_id = '5'
         product_name = self.home.features_items.get_specific_product_name_by_id(product_id)
@@ -418,9 +339,6 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(product_quantity, cart_product_quantity)
 
     def test_placing_order_with_registration_during_checkout(self):
-        if self.check_existence_of_user(self.user1.email):
-            self.delete_user(self.user1.email)
-        self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
         product1_id = self.products.features_items.get_product_id_by_index(0)
@@ -510,8 +428,6 @@ class TestAutomationExercise(TestCase):
         self.account_deleted.click_continue_button()
 
     def test_placing_order_with_registration_before_checkout(self):
-        if self.check_existence_of_user(self.user1.email):
-            self.delete_user(self.user1.email)
         self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
@@ -600,8 +516,6 @@ class TestAutomationExercise(TestCase):
         self.account_deleted.click_continue_button()
 
     def test_placing_order_checkout_after_login(self):
-        if not self.check_existence_of_user(self.user2.email):
-            self.create_user_tester2()
         self.empty_cart(self.user2.email)
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
@@ -711,7 +625,6 @@ class TestAutomationExercise(TestCase):
         self.account_deleted.click_continue_button()
 
     def test_remove_products_from_cart(self):
-        self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
         product1_id = self.products.features_items.get_product_id_by_index(0)
@@ -758,7 +671,6 @@ class TestAutomationExercise(TestCase):
         self.home.filters_menu.click_specific_category(base_category1)
         sub_category1_id = self.home.filters_menu.get_specific_subcategory_id(sub_category1, base_category1)
         self.home.filters_menu.click_specific_subcategory(sub_category1, base_category1)
-        # sleep(2)
         self.assertEqual(sub_category1_id, self.wd.current_url.removeprefix(f'{self.base_url}category_products/'))
         final_breadcrumb_element = self.category_products.breadcrumbs.get_breadcrumb_element_at_index(-1)
         self.assertTrue(final_breadcrumb_element.is_displayed())
@@ -768,7 +680,6 @@ class TestAutomationExercise(TestCase):
         self.category_products.filters_menu.click_specific_category(base_category2)
         sub_category2_id = self.category_products.filters_menu.get_specific_subcategory_id(sub_category2, base_category2)
         self.category_products.filters_menu.click_specific_subcategory(sub_category2, base_category2)
-        # sleep(2)
         self.assertEqual(sub_category2_id, self.wd.current_url.removeprefix(f'{self.base_url}category_products/'))
 
     def test_view_brand_products(self):
@@ -793,8 +704,6 @@ class TestAutomationExercise(TestCase):
         self.assertGreater(len(brand_products_list), 0)
 
     def test_search_products_and_verify_cart_after_login(self):
-        if not self.check_existence_of_user(self.user2.email):
-            self.create_user_tester2()
         self.empty_cart(self.user2.email)
         target_product_name = 'tshirt'
         self.home.navbar.click_navbar_item('Products')
@@ -842,7 +751,7 @@ class TestAutomationExercise(TestCase):
         for cpal in range(0, len(cart_products_list_after_login)):
             cart_products_names_list_after_login.append(self.cart.cart_contents.get_specific_cart_product_name_by_index(cpal))
         self.assertEqual(cart_products_names_list_after_login, cart_products_names_list)
-        self.delete_user(self.user2.email)
+        # self.delete_user(self.user2.email)
 
     def test_add_review_on_product(self):
         self.home.navbar.click_navbar_item('Products')
@@ -874,8 +783,6 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(cart_product_element.is_displayed())
 
     def test_verify_address_details_in_checkout_page(self):
-        if self.check_existence_of_user(self.user1.email):
-            self.delete_user(self.user1.email)
         self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
@@ -950,9 +857,6 @@ class TestAutomationExercise(TestCase):
         self.account_deleted.click_continue_button()
 
     def test_download_invoice_after_purchase(self):
-        if self.check_existence_of_user(self.user1.email):
-            self.delete_user(self.user1.email)
-        self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
         product1_id = self.products.features_items.get_product_id_by_index(0)
@@ -1080,5 +984,5 @@ class TestAutomationExercise(TestCase):
 
     def tearDown(self):
         self.wd.close()
-
-# self.navbar.click_logo()
+        if check_existence_of_user_via_api(self.user2):
+            delete_user_via_api(self.user2)

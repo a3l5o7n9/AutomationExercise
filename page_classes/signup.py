@@ -22,9 +22,9 @@ class Signup(BasePage):
             element.clear()
             element.send_keys(field_input)
         except selenium.common.exceptions.ElementNotInteractableException as e:
-            print(e.msg)
+            print(f'Minor Bug: {e.msg}')
         except selenium.common.exceptions.InvalidElementStateException as e:
-            print(e.msg)
+            print(f'Minor Bug: {e.msg}')
 
     def get_select_field_by_id(self, select_element_id):
         return Select(self.find_element(By.ID, select_element_id))

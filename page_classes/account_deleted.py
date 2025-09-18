@@ -16,4 +16,7 @@ class AccountDeleted(BasePage):
     def click_continue_button(self):
         self.google_ads_elements.hide_ads()
         continue_button = self.get_continue_button()
+        if not continue_button:
+            print('Continue button could not be found')
+            return
         continue_button.click()
