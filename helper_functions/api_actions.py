@@ -3,7 +3,7 @@ import requests
 from object_classes.user import User
 
 def check_existence_of_user_via_api(user:User):
-    print("Entered 'check_existence_of_user_via_api()'")
+    # print("Entered 'check_existence_of_user_via_api()'")
     url = 'https://automationexercise.com/api/verifyLogin'
     form_data = {
         'email': f'{user.email}',
@@ -12,14 +12,14 @@ def check_existence_of_user_via_api(user:User):
 
     try:
         response = requests.post(url, data=form_data)
-        print("Exiting 'check_existence_of_user_via_api()'")
+        # print("Exiting 'check_existence_of_user_via_api()'")
         return '"responseCode": 200' in response.text
     except requests.exceptions as e:
         print(e.msg)
-        print("Exiting 'check_existence_of_user_via_api()'")
+        # print("Exiting 'check_existence_of_user_via_api()'")
 
 def create_user_via_api(user:User):
-    print("Entered 'create_user_via_api()'")
+    # print("Entered 'create_user_via_api()'")
     url = 'https://automationexercise.com/api/createAccount'
     form_data = {
         'name': f'{user.username}',
@@ -43,14 +43,14 @@ def create_user_via_api(user:User):
 
     try:
         response = requests.post(url, data=form_data)
-        print("Exiting 'create_user_via_api()'")
+        # print("Exiting 'create_user_via_api()'")
         return '"responseCode": 201' in response.text
     except requests.exceptions as e:
         print(e.msg)
-        print("Exiting 'create_user_via_api()'")
+        # print("Exiting 'create_user_via_api()'")
 
 def delete_user_via_api(user:User):
-    print("Entered 'delete_user_via_api()'")
+    # print("Entered 'delete_user_via_api()'")
     url = 'https://automationexercise.com/api/deleteAccount'
     form_data = {
         'email': f'{user.email}',
@@ -59,8 +59,8 @@ def delete_user_via_api(user:User):
 
     try:
         response = requests.delete(url, data=form_data)
-        print("Exiting 'delete_user_via_api()'")
+        # print("Exiting 'delete_user_via_api()'")
         return '"responseCode": 200' in response.text
     except requests.exceptions as e:
         print(e.msg)
-        print("Exiting 'delete_user_via_api()'")
+        # print("Exiting 'delete_user_via_api()'")

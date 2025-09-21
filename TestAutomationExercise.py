@@ -30,7 +30,7 @@ from page_classes.payment_done import PaymentDone
 
 class TestAutomationExercise(TestCase):
     def setUp(self):
-        print("Entered 'setUp()'")
+        # print("Entered 'setUp()'")
         with open('test_data/users.json') as test_data:
             data = json.load(test_data)
             self.users_data = data['users']
@@ -85,10 +85,10 @@ class TestAutomationExercise(TestCase):
         self.checkout = Checkout(self.wd, self.base_url)
         self.payment = Payment(self.wd, self.base_url)
         self.payment_done = PaymentDone(self.wd, self.base_url)
-        print("Exiting 'setUp()'")
+        # print("Exiting 'setUp()'")
 
     def empty_cart(self, user_email = ''):
-        print("Entered 'empty_cart()'")
+        # print("Entered 'empty_cart()'")
         options = Options()
         options.add_argument("--headless")
         ecwd = WebDriver(options)
@@ -123,7 +123,7 @@ class TestAutomationExercise(TestCase):
                     if len(cart_products_list) == 0:
                         is_cart_empty = True
         ecwd.quit()
-        print("Exiting 'empty_cart()'")
+        # print("Exiting 'empty_cart()'")
 
     def test_register_user(self):
         home_slider_element  = self.home.get_slider_element()
@@ -434,7 +434,6 @@ class TestAutomationExercise(TestCase):
         self.account_deleted.click_continue_button()
 
     def test_placing_order_with_registration_before_checkout(self):
-        self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.login.set_signup_name_field(self.user1.username)
@@ -986,11 +985,11 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(slider_item_second_header_text, 'Full-Fledged practice website for Automation Engineers')
 
     def tearDown(self):
-        print("Entered 'tearDown()'")
+        # print("Entered 'tearDown()'")
         self.wd.quit()
         if check_existence_of_user_via_api(self.user2):
             delete_user_via_api(self.user2)
 
         if os.path.exists(f'{self.download_path}\\invoice.txt'):
             os.remove(f'{self.download_path}\\invoice.txt')
-        print("Exiting 'tearDown()'")
+        # print("Exiting 'tearDown()'")
