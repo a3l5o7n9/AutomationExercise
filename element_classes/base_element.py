@@ -1,4 +1,4 @@
-import selenium.common
+import selenium.common.exceptions
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait

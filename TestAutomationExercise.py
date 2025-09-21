@@ -1,6 +1,7 @@
 from unittest import TestCase
 import os
 from time import sleep, time
+
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
@@ -29,6 +30,7 @@ from page_classes.payment_done import PaymentDone
 
 class TestAutomationExercise(TestCase):
     def setUp(self):
+        print("Entered 'setUp()'")
         with open('test_data/users.json') as test_data:
             data = json.load(test_data)
             self.users_data = data['users']
@@ -42,12 +44,13 @@ class TestAutomationExercise(TestCase):
         self.base_url = 'https://automationexercise.com/'
 
         if check_existence_of_user_via_api(self.user1):
-            while not delete_user_via_api(self.user1):
-                delete_user_via_api(self.user1)
+            delete_user_via_api(self.user1)
+
+        if check_existence_of_user_via_api(self.user2):
+            self.empty_cart(self.user2.email)
 
         if not check_existence_of_user_via_api(self.user2):
-            while not create_user_via_api(self.user2):
-                create_user_via_api(self.user2)
+            create_user_via_api(self.user2)
 
         try:
             self.empty_cart()
@@ -59,7 +62,7 @@ class TestAutomationExercise(TestCase):
         self.options.set_preference('browser.download.dir', self.download_path)
         self.options.set_preference('browser.download.manager.showWhenStarting', False)
         self.options.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/plain')
-        # self.options.add_argument("--headless")
+        self.options.add_argument("--headless")
         self.wd = WebDriver(self.options)
         self.wd.get(self.base_url)
         self.wd.maximize_window()
@@ -82,6 +85,7 @@ class TestAutomationExercise(TestCase):
         self.checkout = Checkout(self.wd, self.base_url)
         self.payment = Payment(self.wd, self.base_url)
         self.payment_done = PaymentDone(self.wd, self.base_url)
+        print("Exiting 'setUp()'")
 
     def empty_cart(self, user_email = ''):
         print("Entered 'empty_cart()'")
@@ -118,11 +122,14 @@ class TestAutomationExercise(TestCase):
                     cart_products_list = ec_cart.cart_contents.get_products_in_cart_elements_list()
                     if len(cart_products_list) == 0:
                         is_cart_empty = True
-        ecwd.close()
+        ecwd.quit()
         print("Exiting 'empty_cart()'")
 
     def test_register_user(self):
-        self.assertTrue(self.home.get_slider_element().is_displayed())
+        home_slider_element  = self.home.get_slider_element()
+        if not home_slider_element:
+            print('Something went wrong! the page was not displayed properly.')
+        self.assertTrue(home_slider_element.is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.assertTrue(self.login.get_signup_form_header().is_displayed())
         self.login.set_signup_name_field(self.user1.username)
@@ -515,7 +522,6 @@ class TestAutomationExercise(TestCase):
         self.account_deleted.click_continue_button()
 
     def test_placing_order_checkout_after_login(self):
-        self.empty_cart(self.user2.email)
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.assertTrue(self.login.get_login_form_header().is_displayed())
@@ -703,7 +709,6 @@ class TestAutomationExercise(TestCase):
         self.assertGreater(len(brand_products_list), 0)
 
     def test_search_products_and_verify_cart_after_login(self):
-        self.empty_cart(self.user2.email)
         target_product_name = 'tshirt'
         self.home.navbar.click_navbar_item('Products')
         self.assertEqual(self.wd.current_url, f'{self.base_url}products')
@@ -782,7 +787,6 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(cart_product_element.is_displayed())
 
     def test_verify_address_details_in_checkout_page(self):
-        self.empty_cart()
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.login.set_signup_name_field(self.user1.username)
@@ -982,9 +986,11 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(slider_item_second_header_text, 'Full-Fledged practice website for Automation Engineers')
 
     def tearDown(self):
-        self.wd.close()
+        print("Entered 'tearDown()'")
+        self.wd.quit()
         if check_existence_of_user_via_api(self.user2):
             delete_user_via_api(self.user2)
 
         if os.path.exists(f'{self.download_path}\\invoice.txt'):
             os.remove(f'{self.download_path}\\invoice.txt')
+        print("Exiting 'tearDown()'")
