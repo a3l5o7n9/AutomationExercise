@@ -9,9 +9,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 # import selenium.common.exceptions
 from object_classes.user import User
 from helper_functions.api_actions import check_existence_of_user_via_api, create_user_via_api, delete_user_via_api
+from helper_functions.empty_cart_gui import empty_cart
 import json
 
-from page_classes.cart_modal import CartModal
+from element_classes.cart_modal import CartModal
 from page_classes.home import Home
 from page_classes.login import Login
 from page_classes.signup import Signup
@@ -23,7 +24,7 @@ from page_classes.category_products import CategoryProducts
 from page_classes.brand_products import BrandProducts
 from page_classes.product_details import ProductDetails
 from page_classes.cart import Cart
-from page_classes.checkout_modal import CheckoutModal
+from element_classes.checkout_modal import CheckoutModal
 from page_classes.checkout import Checkout
 from page_classes.payment import Payment
 from page_classes.payment_done import PaymentDone
@@ -47,13 +48,13 @@ class TestAutomationExercise(TestCase):
             delete_user_via_api(self.user1)
 
         if check_existence_of_user_via_api(self.user2):
-            self.empty_cart(self.user2.email)
+            empty_cart(self.base_url, self.user2)
 
         if not check_existence_of_user_via_api(self.user2):
             create_user_via_api(self.user2)
 
         try:
-            self.empty_cart()
+            empty_cart(self.base_url)
         except TypeError as e:
             print(e)
 
@@ -86,44 +87,6 @@ class TestAutomationExercise(TestCase):
         self.payment = Payment(self.wd, self.base_url)
         self.payment_done = PaymentDone(self.wd, self.base_url)
         # print("Exiting 'setUp()'")
-
-    def empty_cart(self, user_email = ''):
-        # print("Entered 'empty_cart()'")
-        options = Options()
-        options.add_argument("--headless")
-        ecwd = WebDriver(options)
-        ecwd.set_page_load_timeout(30)
-        ec_home = Home(ecwd, self.base_url)
-        ec_login = Login(ecwd, self.base_url)
-        ec_cart = Cart(ecwd, self.base_url)
-        ecwd.get(self.base_url)
-        if user_email != '':
-            user = ''
-            if user_email == self.user1.email:
-                user = self.user1
-            elif user_email == self.user2.email:
-                user = self.user2
-            ecwd.get(f'{self.base_url}login')
-            ec_login.set_login_email_field(user.email)
-            ec_login.set_login_password_field(user.password)
-            ec_login.click_login_submit_button()
-        if ec_home.get_slider_element():
-            ec_home.navbar.click_navbar_item('Cart')
-            is_cart_empty = ec_cart.get_empty_cart_element().is_displayed()
-            cart_products_list = []
-            while not is_cart_empty:
-                cart_products_list = ec_cart.cart_contents.get_products_in_cart_elements_list()
-                if len(cart_products_list) == 0:
-                    break
-                ec_cart.click_specific_cart_product_delete_by_index(0)
-                ecwd.refresh()
-                is_cart_empty = ec_cart.get_empty_cart_element().is_displayed()
-                if not is_cart_empty:
-                    cart_products_list = ec_cart.cart_contents.get_products_in_cart_elements_list()
-                    if len(cart_products_list) == 0:
-                        is_cart_empty = True
-        ecwd.quit()
-        # print("Exiting 'empty_cart()'")
 
     def test_register_user(self):
         home_slider_element  = self.home.get_slider_element()
@@ -199,17 +162,22 @@ class TestAutomationExercise(TestCase):
 
     def test_register_user_with_existing_email(self):
         username = 'Tester3'
-        self.assertTrue(self.home.get_slider_element().is_displayed())
+        home_slider_element = self.home.get_slider_element()
+        if not home_slider_element:
+            print('Something went wrong! the page was not displayed properly.')
+        self.assertTrue(home_slider_element.is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.assertTrue(self.login.get_signup_form_header().is_displayed())
         self.login.set_signup_name_field(username)
         self.login.set_signup_email_field(self.user2.email)
         self.login.click_signup_submit_button()
         self.assertTrue(self.login.get_signup_error_element().is_displayed())
-        # self.delete_user(self.user2.email)
 
     def test_contact_us_form(self):
-        self.assertTrue(self.home.get_slider_element().is_displayed())
+        home_slider_element = self.home.get_slider_element()
+        if not home_slider_element:
+            print('Something went wrong! the page was not displayed properly.')
+        self.assertTrue(home_slider_element.is_displayed())
         self.home.navbar.click_navbar_item('Contact us')
         self.assertTrue(self.contact_us.get_left_form_header().is_displayed())
         self.contact_us.set_name_field(self.user1.first_name)
@@ -275,7 +243,10 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.home.subscription.get_subscribe_success_message_element().is_displayed())
 
     def test_verify_subscription_in_cart_page(self):
-        self.assertTrue(self.home.get_slider_element().is_displayed())
+        home_slider_element = self.home.get_slider_element()
+        if not home_slider_element:
+            print('Something went wrong! the page was not displayed properly.')
+        self.assertTrue(home_slider_element.is_displayed())
         self.home.navbar.click_navbar_item('Cart')
         self.wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         self.assertEqual(self.cart.subscription.get_footer_element_header().text, 'SUBSCRIPTION')
