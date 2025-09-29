@@ -1,6 +1,7 @@
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
+import selenium.common.exceptions
 
 from element_classes.base_element import BaseElement
 from element_classes.scroll_up_button import ScrollUpButton
@@ -20,4 +21,7 @@ class BasePage:
         self.subscription = Subscription(self.wd, self.base_url)
 
     def find_element(self, locator_type, element_locator, start_element:WebElement = None):
-        return self.base_element.find_element(locator_type, element_locator, start_element)
+        try:
+            return self.base_element.find_element(locator_type, element_locator, start_element)
+        except selenium.common.exceptions as e:
+            raise e

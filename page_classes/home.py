@@ -115,7 +115,7 @@ class Home(BasePage):
                 self.wait.until(EC.visibility_of_element_located((By.XPATH, f"//div[@id='recommended-item-carousel']/div/div/div/div/div/div/a[@data-product-id='{product_id}']")))
             specific_recommended_item_atc_button.click()
         except selenium.common.exceptions as e:
-            print(e.msg)
+            print(f"Exception in Home 'click_specific_recommended_item_add_to_cart_button()': {e.msg}")
 
     def click_specific_recommended_item_add_to_cart_button_by_index(self, item_index):
         self.click_specific_recommended_item_add_to_cart_button('index', item_index)

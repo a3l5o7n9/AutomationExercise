@@ -41,7 +41,7 @@ class FiltersMenu(BaseElement):
             if category_element:
                 category_element.click()
         except selenium.common.exceptions as e:
-            print(e.msg)
+            raise e
 
     def get_subcategories_list(self, base_category_text:str):
         try:
@@ -72,7 +72,7 @@ class FiltersMenu(BaseElement):
                     self.click_specific_category(base_category_text)
                 sub_category_element.click()
         except selenium.common.exceptions as e:
-            print(e.msg)
+            raise e
 
     def get_specific_subcategory_id(self, sub_category_text, base_category_text):
         try:
@@ -113,4 +113,4 @@ class FiltersMenu(BaseElement):
             if brand_element:
                 brand_element.click()
         except selenium.common.exceptions as e:
-            print(e.msg)
+            raise e

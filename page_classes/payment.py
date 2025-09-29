@@ -71,4 +71,3 @@ class Payment(BasePage):
 
     def get_order_payment_success_message_element(self):
         return self.find_element(By.XPATH, "//div[@id='success_message']/div[1]")
-

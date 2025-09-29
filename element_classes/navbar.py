@@ -34,7 +34,7 @@ class NavBar(BaseElement):
             logo = self.get_logo()
             logo.click()
         except selenium.common.exceptions as e:
-            print(e.msg)
+            raise e
 
     def click_navbar_item(self, target_text):
         self.google_ads_elements.hide_ads()
@@ -45,7 +45,7 @@ class NavBar(BaseElement):
                     navbar_item.click()
                     break
         except selenium.common.exceptions as e:
-            print(e.msg)
+            raise e
 
     def get_logged_in_as_element(self):
         try:

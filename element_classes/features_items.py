@@ -99,7 +99,7 @@ class FeaturesItems(BaseElement):
                     return
             button_element.click()
         except selenium.common.exceptions as e:
-            print(e.msg)
+            raise e
 
     def get_specific_product_detail(self, criteria_type, criteria_value, detail_name):
         try:

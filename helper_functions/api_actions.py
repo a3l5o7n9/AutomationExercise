@@ -15,6 +15,7 @@ def check_existence_of_user_via_api(user:User):
         # print("Exiting 'check_existence_of_user_via_api()'")
         return '"responseCode": 200' in response.text
     except requests.exceptions as e:
+        print("Exception in 'check_existence_of_user_via_api()'")
         print(e.msg)
         # print("Exiting 'check_existence_of_user_via_api()'")
 
@@ -46,6 +47,7 @@ def create_user_via_api(user:User):
         # print("Exiting 'create_user_via_api()'")
         return '"responseCode": 201' in response.text
     except requests.exceptions as e:
+        print("Exception in 'create_user_via_api()'")
         print(e.msg)
         # print("Exiting 'create_user_via_api()'")
 
@@ -62,5 +64,6 @@ def delete_user_via_api(user:User):
         # print("Exiting 'delete_user_via_api()'")
         return '"responseCode": 200' in response.text
     except requests.exceptions as e:
+        print("Exception in 'delete_user_via_api()'")
         print(e.msg)
         # print("Exiting 'delete_user_via_api()'")
