@@ -8,7 +8,7 @@ from page_classes.login import Login
 
 
 def empty_cart(base_url, user:User = None):
-    print("Entered 'empty_cart()'")
+    # print("Entered 'empty_cart()'")
     options = Options()
     options.add_argument("--headless")
     ecwd = WebDriver(options)
@@ -43,4 +43,4 @@ def empty_cart(base_url, user:User = None):
         raise e
     finally:
         ecwd.quit()
-        print("Exiting 'empty_cart()'")
+        # print("Exiting 'empty_cart()'")
