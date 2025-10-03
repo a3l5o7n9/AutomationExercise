@@ -1,5 +1,5 @@
-from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.common.by import By
+# from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.chrome.webdriver import WebDriver
 
 from page_classes.base_page import BasePage
 from element_classes.features_items import FeaturesItems

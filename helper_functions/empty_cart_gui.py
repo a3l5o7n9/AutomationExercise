@@ -1,5 +1,7 @@
-from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.webdriver import WebDriver
+# from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.chrome.options import Options
 import selenium.common.exceptions
 from object_classes.user import User
 from page_classes.cart import Cart

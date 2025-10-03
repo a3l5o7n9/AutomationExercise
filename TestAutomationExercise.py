@@ -2,8 +2,10 @@ from unittest import TestCase
 import os
 from time import sleep, time
 
-from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.webdriver import WebDriver
+# from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 # import selenium.common.exceptions
@@ -58,11 +60,21 @@ class TestAutomationExercise(TestCase):
         except TypeError as e:
             print(f"Exception in 'setUp()': {e}")
 
+        prefs = {
+            "download.default_directory": self.download_path,
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": True,
+            "profile.password_manager_leak_detection": False
+        }
+
         self.options = Options()
-        self.options.set_preference('browser.download.folderList', 2)
-        self.options.set_preference('browser.download.dir', self.download_path)
-        self.options.set_preference('browser.download.manager.showWhenStarting', False)
-        self.options.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/plain')
+        self.options.add_experimental_option("prefs", prefs)
+        # For Firefox
+        # self.options.set_preference('browser.download.folderList', 2)
+        # self.options.set_preference('browser.download.dir', self.download_path)
+        # self.options.set_preference('browser.download.manager.showWhenStarting', False)
+        # self.options.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/plain')
         self.options.add_argument("--headless")
         self.wd = WebDriver(self.options)
         self.wd.get(self.base_url)
@@ -725,7 +737,6 @@ class TestAutomationExercise(TestCase):
         for cpal in range(0, len(cart_products_list_after_login)):
             cart_products_names_list_after_login.append(self.cart.cart_contents.get_specific_cart_product_name_by_index(cpal))
         self.assertEqual(cart_products_names_list_after_login, cart_products_names_list)
-        # self.delete_user(self.user2.email)
 
     def test_add_review_on_product(self):
         self.home.navbar.click_navbar_item('Products')

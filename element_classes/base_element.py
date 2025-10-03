@@ -1,5 +1,6 @@
 import selenium.common.exceptions
-from selenium.webdriver.firefox.webdriver import WebDriver
+# from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -23,17 +24,20 @@ class BaseElement:
                 page_body_element = self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'body')))
                 return page_body_element.is_displayed()
         except selenium.common.exceptions as e:
-            raise e
+            raise e(e.msg, None, None)
 
     def find_element(self, locator_type, element_locator:str, start_element:WebElement = None):
-        try:
-            if start_element:
-                # print("Entered if start_element")
-                return start_element.find_element(locator_type, element_locator)
-            if self.is_page_displayed():
-                # print("Entered if 'is_page_displayed()'")
-                return self.wait.until(EC.presence_of_element_located((locator_type, element_locator)))
+        if start_element:
+            # print("Entered if start_element")
+            # print("Entered if start_element")
+            return start_element.find_element(locator_type, element_locator)
+        if self.is_page_displayed():
+            # print("Entered if 'is_page_displayed()'")
+            try:
+                target_element = self.wait.until(EC.presence_of_element_located((locator_type, element_locator)))
+                return target_element
                 # return self.wd.find_element(locator_type, element_locator)
-        except selenium.common.exceptions as e:
-            print('Something went wrong!')
-            raise e
+            except selenium.common.TimeoutException as e:
+                print('Target element does not appear in DOM!')
+                print(self.wd.current_url)
+                raise selenium.common.TimeoutException(e.msg)
