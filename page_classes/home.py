@@ -14,6 +14,9 @@ class Home(BasePage):
         self.features_items = FeaturesItems(self.wd, self.base_url)
         self.filters_menu = FiltersMenu(self.wd, self.base_url)
 
+    def check_url(self):
+        return self.wd.current_url == f'{self.base_url}'
+
     def get_slider_element(self):
         try:
             return self.find_element(By.ID, 'slider')

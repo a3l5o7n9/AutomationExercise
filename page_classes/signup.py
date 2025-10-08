@@ -10,6 +10,9 @@ class Signup(BasePage):
     def __init__(self, wd: WebDriver, base_url):
         super().__init__(wd, base_url)
 
+    def check_url(self):
+        return self.wd.current_url == f'{self.base_url}signup'
+
     def get_form_section_title(self):
         return self.find_element(By.XPATH, "//div[@class='login-form']/h2")
 

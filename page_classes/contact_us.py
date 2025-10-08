@@ -9,6 +9,9 @@ class ContactUs(BasePage):
     def __init__(self, wd: WebDriver, base_url):
         super().__init__(wd, base_url)
 
+    def check_url(self):
+        return self.wd.current_url == f'{self.base_url}contact_us'
+
     def get_left_form_header(self):
         return self.find_element(By.XPATH, "//div[@class='contact-form']/h2[1]")
 

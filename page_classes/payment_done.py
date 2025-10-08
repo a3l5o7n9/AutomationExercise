@@ -8,6 +8,9 @@ class PaymentDone(BasePage):
     def __init__(self, wd: WebDriver, base_url):
         super().__init__(wd, base_url)
 
+    def check_url(self):
+        return self.wd.current_url == f'{self.base_url}payment_done'
+
     def get_download_invoice_button(self):
         return self.find_element(By.LINK_TEXT, 'Download Invoice')
 

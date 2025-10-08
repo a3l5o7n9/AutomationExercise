@@ -12,6 +12,9 @@ class Products(BasePage):
         self.features_items = FeaturesItems(self.wd, self.base_url)
         self.filters_menu = FiltersMenu(self.wd, self.base_url)
 
+    def check_url(self):
+        return self.wd.current_url == f'{self.base_url}products'
+
     def get_search_box_element(self):
         return self.find_element(By.ID, 'search_product')
 

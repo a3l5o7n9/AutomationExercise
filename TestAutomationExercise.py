@@ -101,15 +101,14 @@ class TestAutomationExercise(TestCase):
         # print("Exiting 'setUp()'")
 
     def test_register_user(self):
-        home_slider_element  = self.home.get_slider_element()
-        if not home_slider_element:
-            print('Something went wrong! the page was not displayed properly.')
-        self.assertTrue(home_slider_element.is_displayed())
+        self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
         self.assertTrue(self.login.get_signup_form_header().is_displayed())
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
+        if not self.signup.check_url():
+            sleep(1)
         self.assertTrue(self.signup.get_form_section_title().is_displayed())
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
@@ -355,6 +354,8 @@ class TestAutomationExercise(TestCase):
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
+        if not self.signup.check_url():
+            sleep(1)
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)
@@ -422,6 +423,8 @@ class TestAutomationExercise(TestCase):
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
+        if not self.signup.check_url():
+            sleep(1)
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)
@@ -773,6 +776,8 @@ class TestAutomationExercise(TestCase):
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
+        if not self.signup.check_url():
+            sleep(1)
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)
@@ -868,6 +873,8 @@ class TestAutomationExercise(TestCase):
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
+        if not self.signup.check_url():
+            sleep(1)
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)

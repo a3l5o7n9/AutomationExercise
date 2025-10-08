@@ -10,6 +10,9 @@ class Checkout(BasePage):
         super().__init__(wd, base_url)
         self.cart_contents = CartContents(self.wd, self.base_url, 'checkout')
 
+    def check_url(self):
+        return self.wd.current_url == f'{self.base_url}checkout'
+
     def get_address_details_header_element(self):
         return self.find_element(By.XPATH, ".//div[@class='step-one'][1]")
 

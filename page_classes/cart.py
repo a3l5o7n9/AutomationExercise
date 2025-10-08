@@ -12,6 +12,9 @@ class Cart(BasePage):
         self.cart_contents = CartContents(self.wd, self.base_url, 'cart')
         self.breadcrumbs = Breadcrumbs(self.wd, self.base_url)
 
+    def check_url(self):
+        return self.wd.current_url == f'{self.base_url}view_cart'
+
     def get_empty_cart_element(self):
         return self.find_element(By.ID, 'empty_cart')
 
