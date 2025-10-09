@@ -17,6 +17,7 @@ def check_existence_of_user_via_api(user:User):
     except requests.exceptions.ConnectionError as e:
         print("Exception in 'check_existence_of_user_via_api()': Connection Error")
         print(e.msg)
+        raise
         # print("Exiting 'check_existence_of_user_via_api()'")
 
 def create_user_via_api(user:User):
@@ -49,6 +50,7 @@ def create_user_via_api(user:User):
     except requests.exceptions.ConnectionError as e:
         print("Exception in 'create_user_via_api()': Connection Error")
         print(e.msg)
+        raise
         # print("Exiting 'create_user_via_api()'")
 
 def delete_user_via_api(user:User):
@@ -66,4 +68,5 @@ def delete_user_via_api(user:User):
     except requests.exceptions.ConnectionError as e:
         print("Exception in 'delete_user_via_api()': Connection Error")
         print(e.msg)
+        raise
         # print("Exiting 'delete_user_via_api()'")

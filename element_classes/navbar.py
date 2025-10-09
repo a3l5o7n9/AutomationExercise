@@ -20,14 +20,14 @@ class NavBar(BaseElement):
             header = self.get_header()
             return self.find_element(By.XPATH, ".//[@class='logo pull-left']/a[1]", header)
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_navbar_items(self):
         try:
             header = self.get_header()
             return header.find_elements(By.XPATH, ".//ul[@class='nav navbar-nav']/li/a")
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def click_logo(self):
         self.google_ads_elements.hide_ads()
@@ -35,7 +35,7 @@ class NavBar(BaseElement):
             logo = self.get_logo()
             logo.click()
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def click_navbar_item(self, target_text):
         self.google_ads_elements.hide_ads()
@@ -46,7 +46,7 @@ class NavBar(BaseElement):
                     navbar_item.click()
                     break
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_logged_in_as_element(self):
         try:
@@ -56,4 +56,4 @@ class NavBar(BaseElement):
                     return navbar_item
             return None
         except selenium.common.exceptions as e:
-            raise e
+            raise

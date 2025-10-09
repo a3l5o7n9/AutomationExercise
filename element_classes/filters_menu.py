@@ -16,14 +16,14 @@ class FiltersMenu(BaseElement):
         try:
             return self.find_element(By.ID, 'accordian')
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_categories_list(self):
         try:
             categories_element = self.find_element(By.ID, 'accordian')
             return categories_element.find_elements(By.XPATH, ".//div/div[@class='panel-heading']/h4/a")
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_specific_category_element(self, category_text):
         try:
@@ -33,7 +33,7 @@ class FiltersMenu(BaseElement):
                     return category_item
             return None
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def click_specific_category(self, category_text):
         try:
@@ -42,7 +42,7 @@ class FiltersMenu(BaseElement):
             if category_element:
                 category_element.click()
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_subcategories_list(self, base_category_text:str):
         try:
@@ -52,7 +52,7 @@ class FiltersMenu(BaseElement):
                     return category_element.find_elements(By.XPATH, f".//../../../div[@id='{base_category_text}']/div/ul/li/a")
             return None
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_specific_subcategory_element(self, sub_category_text:str, base_category_text:str):
         try:
@@ -62,7 +62,7 @@ class FiltersMenu(BaseElement):
                     return subcategory_item
             return None
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def click_specific_subcategory(self, sub_category_text, base_category_text):
         try:
@@ -73,7 +73,7 @@ class FiltersMenu(BaseElement):
                     self.click_specific_category(base_category_text)
                 sub_category_element.click()
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_specific_subcategory_id(self, sub_category_text, base_category_text):
         try:
@@ -82,20 +82,20 @@ class FiltersMenu(BaseElement):
                 return sub_category_element.get_property('href').removeprefix(f'{self.base_url}category_products/')
             return None
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_brands_element(self):
         try:
             return self.find_element(By.XPATH, "//div[@class='brands_products']/div[@class='brands-name']")
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_brands_list(self):
         try:
             brands_element = self.get_brands_element()
             return brands_element.find_elements(By.XPATH, ".//ul/li/a")
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_specific_brand_element(self, brand_name):
         try:
@@ -105,7 +105,7 @@ class FiltersMenu(BaseElement):
                     return brand_item
             return None
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def click_specific_brand(self, brand_name):
         try:
@@ -114,4 +114,4 @@ class FiltersMenu(BaseElement):
             if brand_element:
                 brand_element.click()
         except selenium.common.exceptions as e:
-            raise e
+            raise

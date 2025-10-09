@@ -16,14 +16,14 @@ class Breadcrumbs(BaseElement):
         try:
             return self.find_element(By.XPATH, "//div[@class='breadcrumbs']/ol[@class='breadcrumb']")
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_breadcrumbs_elements_list(self):
         try:
             breadcrumbs_element = self.get_breadcrumbs_element()
             return breadcrumbs_element.find_elements(By.TAG_NAME, 'li')
         except selenium.common.exceptions as e:
-            raise e
+            raise
 
     def get_breadcrumb_element_at_index(self, breadcrumb_index):
         try:
@@ -32,4 +32,4 @@ class Breadcrumbs(BaseElement):
                 return breadcrumbs_elements_list[breadcrumb_index]
             return None
         except selenium.common.exceptions as e:
-            raise e
+            raise
