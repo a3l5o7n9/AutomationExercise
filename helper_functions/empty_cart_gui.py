@@ -42,7 +42,7 @@ def empty_cart(base_url, user:User = None):
                         is_cart_empty = True
     except selenium.common.exceptions as e:
         print('Site failed to load properly')
-        raise e
+        raise
     finally:
         ecwd.quit()
         # print("Exiting 'empty_cart()'")

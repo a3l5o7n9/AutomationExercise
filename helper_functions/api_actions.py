@@ -14,8 +14,8 @@ def check_existence_of_user_via_api(user:User):
         response = requests.post(url, data=form_data)
         # print("Exiting 'check_existence_of_user_via_api()'")
         return '"responseCode": 200' in response.text
-    except requests.exceptions as e:
-        print("Exception in 'check_existence_of_user_via_api()'")
+    except requests.exceptions.ConnectionError as e:
+        print("Exception in 'check_existence_of_user_via_api()': Connection Error")
         print(e.msg)
         # print("Exiting 'check_existence_of_user_via_api()'")
 
@@ -46,8 +46,8 @@ def create_user_via_api(user:User):
         response = requests.post(url, data=form_data)
         # print("Exiting 'create_user_via_api()'")
         return '"responseCode": 201' in response.text
-    except requests.exceptions as e:
-        print("Exception in 'create_user_via_api()'")
+    except requests.exceptions.ConnectionError as e:
+        print("Exception in 'create_user_via_api()': Connection Error")
         print(e.msg)
         # print("Exiting 'create_user_via_api()'")
 
@@ -63,7 +63,7 @@ def delete_user_via_api(user:User):
         response = requests.delete(url, data=form_data)
         # print("Exiting 'delete_user_via_api()'")
         return '"responseCode": 200' in response.text
-    except requests.exceptions as e:
-        print("Exception in 'delete_user_via_api()'")
+    except requests.exceptions.ConnectionError as e:
+        print("Exception in 'delete_user_via_api()': Connection Error")
         print(e.msg)
         # print("Exiting 'delete_user_via_api()'")

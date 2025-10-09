@@ -39,5 +39,5 @@ class BaseElement:
                 # return self.wd.find_element(locator_type, element_locator)
             except selenium.common.TimeoutException as e:
                 print('Target element does not appear in DOM!')
-                print(self.wd.current_url)
-                raise selenium.common.TimeoutException(e.msg)
+                print(element_locator)
+                raise

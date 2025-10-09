@@ -25,4 +25,4 @@ class BasePage:
         try:
             return self.base_element.find_element(locator_type, element_locator, start_element)
         except selenium.common.exceptions as e:
-            raise e
+            raise
