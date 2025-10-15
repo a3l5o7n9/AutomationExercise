@@ -21,7 +21,7 @@ class CartContents(BaseElement):
                 case _:
                     print('Invalid page type')
                     return None
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_products_in_cart_elements_list(self):
@@ -31,7 +31,7 @@ class CartContents(BaseElement):
             if cart_products_table_element:
                 cart_product_elements_list = cart_products_table_element.find_elements(By.XPATH, './/tbody/tr')
             return cart_product_elements_list
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_cart_products_dictionary(self):
@@ -42,7 +42,7 @@ class CartContents(BaseElement):
                 product_id = self.get_cart_product_id_by_index(i)
                 cart_products_dict[product_id] = i
             return cart_products_dict
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_cart_product_id_by_index(self, product_index):
@@ -53,7 +53,7 @@ class CartContents(BaseElement):
             cart_product_element = cart_products_list[product_index]
             product_id = cart_product_element.get_attribute('id').removeprefix('product-')
             return product_id
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_element(self, criteria_type, criteria_value):
@@ -70,19 +70,19 @@ class CartContents(BaseElement):
                 case _:
                     print('Invalid criteria')
                     return None
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_element_by_id(self, product_id):
         try:
             return self.get_specific_cart_product_element('id', product_id)
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_element_by_index(self, product_index):
         try:
             return self.get_specific_cart_product_element('index', product_index)
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_detail(self, criteria_type, criteria_value, detail_name):
@@ -102,65 +102,65 @@ class CartContents(BaseElement):
                 case _:
                     print('Invalid detail name')
                     return None
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_name_by_id(self, product_id):
         try:
             return self.get_specific_cart_product_detail('id', product_id, 'product_name').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise e
 
     def get_specific_cart_product_name_by_index(self, product_index):
         try:
             return self.get_specific_cart_product_detail('index', product_index, 'product_name').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_category_by_id(self, product_id):
         try:
             return self.get_specific_cart_product_detail('id', product_id, 'product_category').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_category_by_index(self, product_index):
         try:
             return self.get_specific_cart_product_detail('index', product_index, 'product_category').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_price_by_id(self, product_id):
         try:
             return self.get_specific_cart_product_detail('id', product_id, 'product_price').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_price_by_index(self, product_index):
         try:
             return self.get_specific_cart_product_detail('index', product_index, 'product_price').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_quantity_by_id(self, product_id):
         try:
             return self.get_specific_cart_product_detail('id', product_id, 'product_quantity').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_quantity_by_index(self, product_index):
         try:
             return self.get_specific_cart_product_detail('index', product_index, 'product_quantity').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_total_price_by_id(self, product_id):
         try:
             return self.get_specific_cart_product_detail('id', product_id, 'product_total_price').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_cart_product_total_price_by_index(self, product_index):
         try:
             return self.get_specific_cart_product_detail('index', product_index, 'product_total_price').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise

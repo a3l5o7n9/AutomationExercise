@@ -36,7 +36,6 @@ class BaseElement:
                 target_element = self.wait.until(EC.presence_of_element_located((locator_type, element_locator)))
                 return target_element
                 # return self.wd.find_element(locator_type, element_locator)
-            except selenium.common.TimeoutException as e:
-                print('Target element does not appear in DOM!')
-                print(element_locator)
+            except selenium.common.exceptions.TimeoutException as e:
+                print('Connection timed out. The website stopped responding.')
                 raise

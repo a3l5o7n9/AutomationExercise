@@ -16,20 +16,20 @@ class FeaturesItems(BaseElement):
     def get_features_items_element(self):
         try:
             return self.find_element(By.XPATH,"//div[@class='features_items'][1]")
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_featured_items_header(self):
         try:
             all_products_list_element = self.get_features_items_element()
             return self.find_element(By.XPATH, ".//h2[@class='title text-center'][1]", all_products_list_element)
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_features_products_list_items(self):
         try:
             return self.get_features_items_element().find_elements(By.XPATH,".//div[@class='col-sm-4']/div[@class='product-image-wrapper']")
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_products_dictionary(self):
@@ -40,7 +40,7 @@ class FeaturesItems(BaseElement):
                 product_id = self.get_product_id_by_index(i)
                 products_dict[product_id] = i
             return products_dict
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_product_id_by_index(self, product_index):
@@ -49,7 +49,7 @@ class FeaturesItems(BaseElement):
             add_to_cart_element = self.find_element(By.LINK_TEXT, 'Add to cart', products_list[product_index])
             product_id = add_to_cart_element.get_attribute('data-product-id')
             return product_id
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_element(self, criteria_type, criteria_value):
@@ -64,19 +64,19 @@ class FeaturesItems(BaseElement):
                 case _:
                     print('Invalid criteria')
                     return None
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_element_by_id(self, product_id):
         try:
             return self.get_specific_product_element('id', product_id)
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_element_by_index(self, product_index):
         try:
             return self.get_specific_product_element('index', product_index)
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def click_specific_product_button(self, criteria_type, criteria_value, button_text):
@@ -99,7 +99,7 @@ class FeaturesItems(BaseElement):
                     print('Invalid criteria')
                     return
             button_element.click()
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_detail(self, criteria_type, criteria_value, detail_name):
@@ -113,31 +113,31 @@ class FeaturesItems(BaseElement):
                 case _:
                     print('Invalid detail name')
                     return None
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_name_by_id(self, product_id):
         try:
             return self.get_specific_product_detail('id', product_id, 'product_name').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_name_by_index(self, product_index):
         try:
             return self.get_specific_product_detail('index', product_index, 'product_name').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_price_by_id(self, product_id):
         try:
             return self.get_specific_product_detail('id', product_id, 'product_price').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def get_specific_product_price_by_index(self, product_index):
         try:
             return self.get_specific_product_detail('index', product_index, 'product_price').text
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
 
     def click_specific_product_add_to_cart_by_id(self, product_id):

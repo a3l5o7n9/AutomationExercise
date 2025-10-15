@@ -19,14 +19,18 @@ class NavBar(BaseElement):
         try:
             header = self.get_header()
             return self.find_element(By.XPATH, ".//[@class='logo pull-left']/a[1]", header)
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
+        except selenium.common.exceptions.NoSuchElementException as e:
             raise
 
     def get_navbar_items(self):
         try:
             header = self.get_header()
             return header.find_elements(By.XPATH, ".//ul[@class='nav navbar-nav']/li/a")
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
+        except selenium.common.exceptions.NoSuchElementException as e:
             raise
 
     def click_logo(self):
@@ -34,7 +38,9 @@ class NavBar(BaseElement):
         try:
             logo = self.get_logo()
             logo.click()
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
+        except selenium.common.exceptions.NoSuchElementException as e:
             raise
 
     def click_navbar_item(self, target_text):
@@ -45,7 +51,9 @@ class NavBar(BaseElement):
                 if target_text in navbar_item.text:
                     navbar_item.click()
                     break
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
+        except selenium.common.exceptions.NoSuchElementException as e:
             raise
 
     def get_logged_in_as_element(self):
@@ -55,5 +63,7 @@ class NavBar(BaseElement):
                 if 'Logged in as ' in navbar_item.text:
                     return navbar_item
             return None
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
+        except selenium.common.exceptions.NoSuchElementException as e:
             raise

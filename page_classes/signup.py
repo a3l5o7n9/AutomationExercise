@@ -25,6 +25,10 @@ class Signup(BasePage):
         try:
             element.clear()
             element.send_keys(field_input)
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
+        except selenium.common.exceptions.NoSuchElementException as e:
+            raise
         except selenium.common.exceptions.ElementNotInteractableException as e:
             print(f'Minor Bug: {e.msg}')
         except selenium.common.exceptions.InvalidElementStateException as e:

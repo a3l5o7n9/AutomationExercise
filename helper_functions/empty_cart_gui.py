@@ -40,7 +40,7 @@ def empty_cart(base_url, user:User = None):
                     cart_products_list = ec_cart.cart_contents.get_products_in_cart_elements_list()
                     if len(cart_products_list) == 0:
                         is_cart_empty = True
-    except selenium.common.exceptions as e:
+    except selenium.common.exceptions.TimeoutException as e:
         print('Site failed to load properly')
         raise
     finally:

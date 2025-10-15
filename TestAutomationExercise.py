@@ -2,6 +2,7 @@ from unittest import TestCase
 import os
 from time import sleep, time
 
+import selenium.common.exceptions
 # from selenium.webdriver.firefox.webdriver import WebDriver
 # from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -78,7 +79,11 @@ class TestAutomationExercise(TestCase):
         # self.options.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/plain')
         self.options.add_argument("--headless")
         self.wd = WebDriver(self.options)
-        self.wd.get(self.base_url)
+        try:
+            self.wd.get(self.base_url)
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Connection timed out. The website did not respond.')
+            raise
         self.wd.maximize_window()
         self.wd.implicitly_wait(10)
         self.wait = WebDriverWait(self.wd, 10)

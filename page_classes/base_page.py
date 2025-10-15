@@ -24,5 +24,5 @@ class BasePage:
     def find_element(self, locator_type, element_locator, start_element:WebElement = None):
         try:
             return self.base_element.find_element(locator_type, element_locator, start_element)
-        except selenium.common.exceptions as e:
+        except selenium.common.exceptions.TimeoutException as e:
             raise
