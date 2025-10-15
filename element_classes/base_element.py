@@ -15,20 +15,19 @@ class BaseElement:
         try:
             page_ready_state = self.wd.execute_script("return document.readyState;")
             return page_ready_state == 'complete'
-        except selenium.common.exceptions as e:
-            raise e
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
 
     def is_page_displayed(self):
         try:
             if self.is_page_loaded():
                 page_body_element = self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'body')))
                 return page_body_element.is_displayed()
-        except selenium.common.exceptions as e:
-            raise e(e.msg, None, None)
+        except selenium.common.exceptions.TimeoutException as e:
+            raise
 
     def find_element(self, locator_type, element_locator:str, start_element:WebElement = None):
         if start_element:
-            # print("Entered if start_element")
             # print("Entered if start_element")
             return start_element.find_element(locator_type, element_locator)
         if self.is_page_displayed():

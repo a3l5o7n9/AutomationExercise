@@ -59,6 +59,7 @@ class TestAutomationExercise(TestCase):
             empty_cart(self.base_url)
         except TypeError as e:
             print(f"Exception in 'setUp()': {e}")
+            raise
 
         prefs = {
             "download.default_directory": self.download_path,
