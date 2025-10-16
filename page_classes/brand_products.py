@@ -1,5 +1,7 @@
 # from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common.exceptions
 
 from page_classes.base_page import BasePage
 from element_classes.features_items import FeaturesItems
@@ -13,3 +15,10 @@ class BrandProducts(BasePage):
         self.filters_menu = FiltersMenu(self.wd, self.base_url)
         self.breadcrumbs = Breadcrumbs(self.wd, self.base_url)
 
+    def check_url(self):
+        try:
+            self.wait.until(EC.url_contains('brand_products'))
+            return f'{self.base_url}brand_products' in self.wd.current_url
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Brand Products page was not loaded properly!')
+            raise

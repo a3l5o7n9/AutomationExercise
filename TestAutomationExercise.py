@@ -56,11 +56,7 @@ class TestAutomationExercise(TestCase):
         if not check_existence_of_user_via_api(self.user2):
             create_user_via_api(self.user2)
 
-        try:
-            empty_cart(self.base_url)
-        except TypeError as e:
-            print(f"Exception in 'setUp()': {e}")
-            raise
+        empty_cart(self.base_url)
 
         prefs = {
             "download.default_directory": self.download_path,
@@ -107,14 +103,18 @@ class TestAutomationExercise(TestCase):
         # print("Exiting 'setUp()'")
 
     def test_register_user(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.assertTrue(self.login.get_signup_form_header().is_displayed())
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
-        if not self.signup.check_url():
-            sleep(1)
+        # Verify signup page is loaded
+        self.assertTrue(self.signup.check_url())
         self.assertTrue(self.signup.get_form_section_title().is_displayed())
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
@@ -136,29 +136,47 @@ class TestAutomationExercise(TestCase):
         self.signup.set_zipcode_field(self.user1.zipcode)
         self.signup.set_mobile_number_field(self.user1.mobile_number)
         self.signup.click_submit_button()
+        # Verify Account Created page is loaded
+        self.assertTrue(self.account_created.check_url())
         self.assertTrue(self.account_created.get_account_created_header().is_displayed())
         self.account_created.click_continue_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user1.username}')
         self.home.navbar.click_navbar_item('Delete Account')
+        # Verify Account Deleted page is loaded
+        self.assertTrue(self.account_deleted.check_url())
         self.assertTrue(self.account_deleted.get_account_deleted_header().is_displayed())
         self.account_deleted.click_continue_button()
 
     def test_login_with_correct_credentials(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.assertTrue(self.login.get_login_form_header().is_displayed())
         self.login.set_login_email_field(self.user2.email)
         self.login.set_login_password_field(self.user2.password)
         self.login.click_login_submit_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user2.username}')
         self.home.navbar.click_navbar_item('Delete Account')
+        # Verify Account Deleted page is loaded
+        self.assertTrue(self.account_deleted.check_url())
         self.assertTrue(self.account_deleted.get_account_deleted_header().is_displayed())
 
     def test_login_with_incorrect_credentials(self):
         incorrect_email = 'tester3@goo.com'
         incorrect_password = 'Testing'
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.assertTrue(self.login.get_login_form_header().is_displayed())
         self.login.set_login_email_field(incorrect_email)
         self.login.set_login_password_field(incorrect_password)
@@ -166,24 +184,33 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.login.get_login_error_element().is_displayed())
 
     def test_logout_user(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.assertTrue(self.login.get_login_form_header().is_displayed())
         self.login.set_login_email_field(self.user2.email)
         self.login.set_login_password_field(self.user2.password)
         self.login.click_login_submit_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user2.username}')
         self.home.navbar.click_navbar_item('Logout')
+        # Verify Login page is loaded after logout
+        self.assertTrue(self.login.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}login')
         # self.delete_user(self.user2.email)
 
     def test_register_user_with_existing_email(self):
         username = 'Tester3'
-        home_slider_element = self.home.get_slider_element()
-        if not home_slider_element:
-            print('Something went wrong! the page was not displayed properly.')
-        self.assertTrue(home_slider_element.is_displayed())
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
+        self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.assertTrue(self.login.get_signup_form_header().is_displayed())
         self.login.set_signup_name_field(username)
         self.login.set_signup_email_field(self.user2.email)
@@ -191,11 +218,12 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.login.get_signup_error_element().is_displayed())
 
     def test_contact_us_form(self):
-        home_slider_element = self.home.get_slider_element()
-        if not home_slider_element:
-            print('Something went wrong! the page was not displayed properly.')
-        self.assertTrue(home_slider_element.is_displayed())
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
+        self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Contact us')
+        # Verify Contact Us page is loaded
+        self.assertTrue(self.contact_us.check_url())
         self.assertTrue(self.contact_us.get_left_form_header().is_displayed())
         self.contact_us.set_name_field(self.user1.first_name)
         self.contact_us.set_email_field(self.user1.email)
@@ -206,20 +234,30 @@ class TestAutomationExercise(TestCase):
         self.contact_us.click_ok_in_popup()
         self.assertTrue(self.contact_us.get_success_message_element().is_displayed())
         self.contact_us.click_success_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
 
     def test_test_cases_page(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Test Cases')
         self.assertEqual(self.wd.current_url, f'{self.base_url}test_cases')
 
     def test_all_products_and_product_details_pages(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}products')
         self.assertTrue(self.products.features_items.get_features_items_element().is_displayed())
         product_id = self.products.features_items.get_product_id_by_index(0)
         self.products.features_items.click_specific_product_view_button_by_index(0)
+        # Verify Product Details page is loaded
+        self.assertTrue(self.product_details.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}product_details/{product_id}')
         self.assertTrue(self.product_details.get_product_name_element().is_displayed())
         self.assertTrue(self.product_details.get_product_category_element().is_displayed())
@@ -230,8 +268,12 @@ class TestAutomationExercise(TestCase):
 
     def test_search_product(self):
         target_product_name = 'tshirt'
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}products')
         target_products_names_list = []
         all_products_list = self.products.features_items.get_features_products_list_items()
@@ -252,6 +294,8 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(target_products_names_list, filtered_shirts_names_list)
 
     def test_verify_subscription_in_home_page(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         self.assertEqual(self.home.subscription.get_footer_element_header().text, 'SUBSCRIPTION')
@@ -260,11 +304,12 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.home.subscription.get_subscribe_success_message_element().is_displayed())
 
     def test_verify_subscription_in_cart_page(self):
-        home_slider_element = self.home.get_slider_element()
-        if not home_slider_element:
-            print('Something went wrong! the page was not displayed properly.')
-        self.assertTrue(home_slider_element.is_displayed())
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
+        self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         self.assertEqual(self.cart.subscription.get_footer_element_header().text, 'SUBSCRIPTION')
         self.cart.subscription.set_subscribe_email_value(self.user1.email)
@@ -272,8 +317,12 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(self.cart.subscription.get_subscribe_success_message_element().is_displayed())
 
     def test_add_products_to_cart(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         product1_id = self.products.features_items.get_product_id_by_index(0)
         product1_name = self.products.features_items.get_specific_product_name_by_index(0)
         product1_price = self.products.features_items.get_specific_product_price_by_index(0)
@@ -292,6 +341,8 @@ class TestAutomationExercise(TestCase):
         self.ac.move_to_element(self.products.features_items.get_specific_product_element_by_index(1)).perform()
         self.products.features_items.click_specific_product_add_to_cart_by_index(1)
         self.cart_modal.click_view_cart_in_modal()
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         cart_products_list = self.cart.cart_contents.get_products_in_cart_elements_list()
         cart_products_id_list = []
         for cp in range(0, len(cart_products_list)):
@@ -312,11 +363,15 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(product2_total_price_str, cart_product2_total_price)
 
     def test_product_quantity_in_cart(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         product_id = '5'
         product_name = self.home.features_items.get_specific_product_name_by_id(product_id)
         product_quantity = '4'
         self.home.features_items.click_specific_product_view_button_by_id(product_id)
+        # Verify Product Details page is loaded
+        self.assertTrue(self.product_details.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}product_details/{product_id}')
         self.assertTrue(self.product_details.get_product_name_element().is_displayed())
         self.assertTrue(self.product_details.get_product_category_element().is_displayed())
@@ -327,14 +382,20 @@ class TestAutomationExercise(TestCase):
         self.product_details.set_product_quantity_field(product_quantity)
         self.product_details.click_add_to_cart_button()
         self.cart_modal.click_view_cart_in_modal()
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         cart_product_name = self.cart.cart_contents.get_specific_cart_product_name_by_id(product_id)
         cart_product_quantity = self.cart.cart_contents.get_specific_cart_product_quantity_by_id(product_id)
         self.assertEqual(product_name, cart_product_name)
         self.assertEqual(product_quantity, cart_product_quantity)
 
     def test_placing_order_with_registration_during_checkout(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         product1_id = self.products.features_items.get_product_id_by_index(0)
         product1_name = self.products.features_items.get_specific_product_name_by_index(0)
         product1_price = self.products.features_items.get_specific_product_price_by_index(0)
@@ -354,14 +415,18 @@ class TestAutomationExercise(TestCase):
         self.products.features_items.click_specific_product_add_to_cart_by_index(1)
         self.cart_modal.click_continue_in_modal()
         self.products.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.get_cart_contents_table_element().is_displayed())
         self.cart.click_proceed_to_checkout_button()
         self.checkout_modal.click_register_login_in_modal()
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
-        if not self.signup.check_url():
-            sleep(1)
+        # Verify Signup page is loaded
+        self.assertTrue(self.signup.check_url())
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)
@@ -382,11 +447,19 @@ class TestAutomationExercise(TestCase):
         self.signup.set_zipcode_field(self.user1.zipcode)
         self.signup.set_mobile_number_field(self.user1.mobile_number)
         self.signup.click_submit_button()
+        # Verify Account Created page is loaded
+        self.assertTrue(self.account_created.check_url())
         self.assertTrue(self.account_created.get_account_created_header().is_displayed())
         self.account_created.click_continue_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user1.username}')
         self.home.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.cart.click_proceed_to_checkout_button()
+        # Verify Checkout page is loaded
+        self.assertTrue(self.checkout.check_url())
         self.assertTrue(self.checkout.get_address_details_header_element().is_displayed())
         self.assertTrue(self.checkout.get_review_order_header_element().is_displayed())
         checkout_product1_name = self.checkout.cart_contents.get_specific_cart_product_name_by_id(product1_id)
@@ -412,6 +485,8 @@ class TestAutomationExercise(TestCase):
         cvc = '123'
         expiry_month = '12'
         expiry_year = '2028'
+        # Verify Payment page is loaded
+        self.assertTrue(self.payment.check_url())
         self.payment.set_name_on_card_field(name_on_card)
         self.payment.set_card_number_field(card_number)
         self.payment.set_cvc_field(cvc)
@@ -419,18 +494,26 @@ class TestAutomationExercise(TestCase):
         self.payment.set_expiry_year_field(expiry_year)
         is_success_message_displayed = self.payment.click_pay_and_confirm_order_button()
         self.assertTrue(is_success_message_displayed)
+        # Verify Payment Done page is loaded
+        self.assertTrue(self.payment_done.check_url())
         self.payment_done.navbar.click_navbar_item('Delete Account')
+        # Verify Account Deleted page is loaded
+        self.assertTrue(self.account_deleted.check_url())
         self.assertTrue(self.account_deleted.get_account_deleted_header().is_displayed())
         self.account_deleted.click_continue_button()
 
     def test_placing_order_with_registration_before_checkout(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
-        if not self.signup.check_url():
-            sleep(1)
+        # Verify Signup page is loaded
+        self.assertTrue(self.signup.check_url())
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)
@@ -451,10 +534,16 @@ class TestAutomationExercise(TestCase):
         self.signup.set_zipcode_field(self.user1.zipcode)
         self.signup.set_mobile_number_field(self.user1.mobile_number)
         self.signup.click_submit_button()
+        # Verify Account Created page is loaded
+        self.assertTrue(self.account_created.check_url())
         self.assertTrue(self.account_created.get_account_created_header().is_displayed())
         self.account_created.click_continue_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user1.username}')
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         product1_id = self.products.features_items.get_product_id_by_index(0)
         product1_name = self.products.features_items.get_specific_product_name_by_index(0)
         product1_price = self.products.features_items.get_specific_product_price_by_index(0)
@@ -474,8 +563,12 @@ class TestAutomationExercise(TestCase):
         self.products.features_items.click_specific_product_add_to_cart_by_index(1)
         self.cart_modal.click_continue_in_modal()
         self.products.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.get_cart_contents_table_element().is_displayed())
         self.cart.click_proceed_to_checkout_button()
+        # Verify Checkout page is loaded
+        self.assertTrue(self.checkout.check_url())
         self.assertTrue(self.checkout.get_address_details_header_element().is_displayed())
         self.assertTrue(self.checkout.get_review_order_header_element().is_displayed())
         checkout_product1_name = self.checkout.cart_contents.get_specific_cart_product_name_by_id(product1_id)
@@ -501,6 +594,8 @@ class TestAutomationExercise(TestCase):
         cvc = '123'
         expiry_month = '12'
         expiry_year = '2028'
+        # Verify Payment page is loaded
+        self.assertTrue(self.payment.check_url())
         self.payment.set_name_on_card_field(name_on_card)
         self.payment.set_card_number_field(card_number)
         self.payment.set_cvc_field(cvc)
@@ -508,19 +603,31 @@ class TestAutomationExercise(TestCase):
         self.payment.set_expiry_year_field(expiry_year)
         is_success_message_displayed = self.payment.click_pay_and_confirm_order_button()
         self.assertTrue(is_success_message_displayed)
+        # Verify Payment Done page is loaded
+        self.assertTrue(self.payment_done.check_url())
         self.payment_done.navbar.click_navbar_item('Delete Account')
+        # Verify Account Deleted page is loaded
+        self.assertTrue(self.account_deleted.check_url())
         self.assertTrue(self.account_deleted.get_account_deleted_header().is_displayed())
         self.account_deleted.click_continue_button()
 
     def test_placing_order_checkout_after_login(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.assertTrue(self.login.get_login_form_header().is_displayed())
         self.login.set_login_email_field(self.user2.email)
         self.login.set_login_password_field(self.user2.password)
         self.login.click_login_submit_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user2.username}')
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         product1_id = self.products.features_items.get_product_id_by_index(0)
         product1_name = self.products.features_items.get_specific_product_name_by_index(0)
         product1_price = self.products.features_items.get_specific_product_price_by_index(0)
@@ -540,6 +647,8 @@ class TestAutomationExercise(TestCase):
         self.products.features_items.click_specific_product_add_to_cart_by_index(1)
         self.cart_modal.click_continue_in_modal()
         self.products.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.get_cart_contents_table_element().is_displayed())
         cart_product1_name = self.cart.cart_contents.get_specific_cart_product_name_by_id(product1_id)
         cart_product1_price = self.cart.cart_contents.get_specific_cart_product_price_by_id(product1_id)
@@ -558,6 +667,8 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(str(product2_quantity), cart_product2_quantity)
         self.assertEqual(product2_total_price_str, cart_product2_total_price)
         self.cart.click_proceed_to_checkout_button()
+        # Verify Checkout page is loaded
+        self.assertTrue(self.checkout.check_url())
         address_delivery_gender_title_firstname_lastname = self.checkout.get_address_delivery_gender_title_firstname_lastname()
         address_delivery_company = self.checkout.get_address_delivery_company()
         address_delivery_address1 = self.checkout.get_address_delivery_address1()
@@ -609,6 +720,8 @@ class TestAutomationExercise(TestCase):
         cvc = '123'
         expiry_month = '12'
         expiry_year = '2028'
+        # Verify Payment page is loaded
+        self.assertTrue(self.payment.check_url())
         self.payment.set_name_on_card_field(name_on_card)
         self.payment.set_card_number_field(card_number)
         self.payment.set_cvc_field(cvc)
@@ -616,13 +729,21 @@ class TestAutomationExercise(TestCase):
         self.payment.set_expiry_year_field(expiry_year)
         is_success_message_displayed = self.payment.click_pay_and_confirm_order_button()
         self.assertTrue(is_success_message_displayed)
+        # Verify Payment Done page is loaded
+        self.assertTrue(self.payment_done.check_url())
         self.payment_done.navbar.click_navbar_item('Delete Account')
+        # Verify Account Deleted page is loaded
+        self.assertTrue(self.account_deleted.check_url())
         self.assertTrue(self.account_deleted.get_account_deleted_header().is_displayed())
         self.account_deleted.click_continue_button()
 
     def test_remove_products_from_cart(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         product1_id = self.products.features_items.get_product_id_by_index(0)
         product1_name = self.products.features_items.get_specific_product_name_by_index(0)
         product2_id = self.products.features_items.get_product_id_by_index(1)
@@ -634,6 +755,8 @@ class TestAutomationExercise(TestCase):
         self.products.features_items.click_specific_product_add_to_cart_by_index(1)
         self.cart_modal.click_continue_in_modal()
         self.products.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.get_cart_contents_table_element().is_displayed())
         cart_products_list = self.cart.cart_contents.get_products_in_cart_elements_list()
         cart_products_names = []
@@ -662,11 +785,15 @@ class TestAutomationExercise(TestCase):
         sub_category1 = 'Tops'
         base_category2 = 'Men'
         sub_category2 = 'Tshirts'
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.assertTrue(self.home.filters_menu.get_categories_element().is_displayed())
         self.home.filters_menu.click_specific_category(base_category1)
         sub_category1_id = self.home.filters_menu.get_specific_subcategory_id(sub_category1, base_category1)
         self.home.filters_menu.click_specific_subcategory(sub_category1, base_category1)
+        # Verify Category Products page is loaded
+        self.assertTrue(self.category_products.check_url())
         self.assertEqual(sub_category1_id, self.wd.current_url.removeprefix(f'{self.base_url}category_products/'))
         final_breadcrumb_element = self.category_products.breadcrumbs.get_breadcrumb_element_at_index(-1)
         self.assertTrue(final_breadcrumb_element.is_displayed())
@@ -676,15 +803,23 @@ class TestAutomationExercise(TestCase):
         self.category_products.filters_menu.click_specific_category(base_category2)
         sub_category2_id = self.category_products.filters_menu.get_specific_subcategory_id(sub_category2, base_category2)
         self.category_products.filters_menu.click_specific_subcategory(sub_category2, base_category2)
+        # Verify Category Products page is loaded
+        self.assertTrue(self.category_products.check_url())
         self.assertEqual(sub_category2_id, self.wd.current_url.removeprefix(f'{self.base_url}category_products/'))
 
     def test_view_brand_products(self):
         brand1 = 'Madame'
         brand2 = 'Polo'
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         self.assertTrue(self.products.filters_menu.get_brands_element().is_displayed())
         self.products.filters_menu.click_specific_brand(brand1)
+        # Verify Brand Products page is loaded
+        self.assertTrue(self.brand_products.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}brand_products/{brand1}')
         final_breadcrumb_element = self.brand_products.breadcrumbs.get_breadcrumb_element_at_index(-1)
         self.assertTrue(final_breadcrumb_element.is_displayed())
@@ -692,6 +827,8 @@ class TestAutomationExercise(TestCase):
         brand_products_list = self.brand_products.features_items.get_features_products_list_items()
         self.assertGreater(len(brand_products_list), 0)
         self.brand_products.filters_menu.click_specific_brand(brand2)
+        # Verify Brand Products page is loaded
+        self.assertTrue(self.brand_products.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}brand_products/{brand2}')
         final_breadcrumb_element = self.brand_products.breadcrumbs.get_breadcrumb_element_at_index(-1)
         self.assertTrue(final_breadcrumb_element.is_displayed())
@@ -701,7 +838,11 @@ class TestAutomationExercise(TestCase):
 
     def test_search_products_and_verify_cart_after_login(self):
         target_product_name = 'tshirt'
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}products')
         category_products_names_list = []
         all_products_list = self.products.features_items.get_features_products_list_items()
@@ -724,6 +865,8 @@ class TestAutomationExercise(TestCase):
                 self.cart_modal.click_continue_in_modal()
         self.assertEqual(len(category_products_names_list), len(filtered_products_names_list))
         self.products.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.cart_contents.get_cart_contents_table().is_displayed())
         cart_products_list = self.cart.cart_contents.get_products_in_cart_elements_list()
         cart_products_names_list = []
@@ -734,12 +877,18 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(len(cart_products_names_list), len(filtered_products_names_list))
         self.assertEqual(cart_products_names_list, filtered_products_names_list)
         self.cart.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}login')
         self.login.set_login_email_field(self.user2.email)
         self.login.set_login_password_field(self.user2.password)
         self.login.click_login_submit_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user2.username}')
         self.home.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.cart_contents.get_cart_contents_table().is_displayed())
         cart_products_list_after_login = self.cart.cart_contents.get_products_in_cart_elements_list()
         cart_products_names_list_after_login = []
@@ -748,10 +897,16 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(cart_products_names_list_after_login, cart_products_names_list)
 
     def test_add_review_on_product(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         self.assertEqual(self.wd.current_url, f'{self.base_url}products')
         self.assertTrue(self.products.features_items.get_features_items_element().is_displayed())
         self.products.features_items.click_specific_product_view_button_by_index(0)
+        # Verify Product Details page is loaded
+        self.assertTrue(self.product_details.check_url())
         write_review_label = self.product_details.get_write_review_label_element().text
         self.assertEqual(write_review_label, 'WRITE YOUR REVIEW')
         self.product_details.set_write_review_name_field(self.user1.username)
@@ -765,6 +920,8 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(success_message_element.text, 'Thank you for your review.')
 
     def test_add_to_cart_from_recommended_items(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         recommended_items_title_element = self.home.get_recommended_items_title_element()
         self.assertTrue(recommended_items_title_element.is_displayed())
@@ -772,18 +929,24 @@ class TestAutomationExercise(TestCase):
         product_id = self.home.get_specific_recommended_item_id(0)
         self.home.click_specific_recommended_item_add_to_cart_button_by_id(product_id)
         self.cart_modal.click_view_cart_in_modal()
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.cart_contents.get_cart_contents_table().is_displayed())
         cart_product_element = self.cart.cart_contents.get_specific_cart_product_element('id', product_id)
         self.assertTrue(cart_product_element.is_displayed())
 
     def test_verify_address_details_in_checkout_page(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Signup / Login')
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
-        if not self.signup.check_url():
-            sleep(1)
+        # Verify Signup page is loaded
+        self.assertTrue(self.signup.check_url())
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)
@@ -804,10 +967,16 @@ class TestAutomationExercise(TestCase):
         self.signup.set_zipcode_field(self.user1.zipcode)
         self.signup.set_mobile_number_field(self.user1.mobile_number)
         self.signup.click_submit_button()
+        # Verify Account Created page is loaded
+        self.assertTrue(self.account_created.check_url())
         self.assertTrue(self.account_created.get_account_created_header().is_displayed())
         self.account_created.click_continue_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user1.username}')
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         self.ac.move_to_element(self.products.features_items.get_specific_product_element_by_index(0)).perform()
         self.products.features_items.click_specific_product_add_to_cart_by_index(0)
         self.cart_modal.click_continue_in_modal()
@@ -815,8 +984,12 @@ class TestAutomationExercise(TestCase):
         self.products.features_items.click_specific_product_add_to_cart_by_index(1)
         self.cart_modal.click_continue_in_modal()
         self.products.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.get_cart_contents_table_element().is_displayed())
         self.cart.click_proceed_to_checkout_button()
+        # Verify Checkout page is loaded
+        self.assertTrue(self.checkout.check_url())
         self.assertTrue(self.checkout.get_address_details_header_element().is_displayed())
         self.assertTrue(self.checkout.get_review_order_header_element().is_displayed())
         address_delivery_gender_title_firstname_lastname = self.checkout.get_address_delivery_gender_title_firstname_lastname()
@@ -848,12 +1021,18 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(address_delivery_phone, self.user1.mobile_number)
         self.assertEqual(address_billing_phone, self.user1.mobile_number)
         self.checkout.navbar.click_navbar_item('Delete Account')
+        # Verify Account Deleted page is loaded
+        self.assertTrue(self.account_deleted.check_url())
         self.assertTrue(self.account_deleted.get_account_deleted_header().is_displayed())
         self.account_deleted.click_continue_button()
 
     def test_download_invoice_after_purchase(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.home.navbar.click_navbar_item('Products')
+        # Verify Products page is loaded
+        self.assertTrue(self.products.check_url())
         product1_id = self.products.features_items.get_product_id_by_index(0)
         product1_name = self.products.features_items.get_specific_product_name_by_index(0)
         product1_price = self.products.features_items.get_specific_product_price_by_index(0)
@@ -873,14 +1052,18 @@ class TestAutomationExercise(TestCase):
         self.products.features_items.click_specific_product_add_to_cart_by_index(1)
         self.cart_modal.click_continue_in_modal()
         self.products.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.assertTrue(self.cart.get_cart_contents_table_element().is_displayed())
         self.cart.click_proceed_to_checkout_button()
         self.checkout_modal.click_register_login_in_modal()
+        # Verify Login page is loaded
+        self.assertTrue(self.login.check_url())
         self.login.set_signup_name_field(self.user1.username)
         self.login.set_signup_email_field(self.user1.email)
         self.login.click_signup_submit_button()
-        if not self.signup.check_url():
-            sleep(1)
+        # Verify Signup page is loaded
+        self.assertTrue(self.signup.check_url())
         self.signup.select_gender_title(self.user1.title)
         self.signup.set_name_field(self.user1.username)
         self.signup.set_email_field(self.user1.email)
@@ -901,11 +1084,19 @@ class TestAutomationExercise(TestCase):
         self.signup.set_zipcode_field(self.user1.zipcode)
         self.signup.set_mobile_number_field(self.user1.mobile_number)
         self.signup.click_submit_button()
+        # Verify Account Created page is loaded
+        self.assertTrue(self.account_created.check_url())
         self.assertTrue(self.account_created.get_account_created_header().is_displayed())
         self.account_created.click_continue_button()
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertEqual(self.home.navbar.get_logged_in_as_element().text, f'Logged in as {self.user1.username}')
         self.home.navbar.click_navbar_item('Cart')
+        # Verify Cart page is loaded
+        self.assertTrue(self.cart.check_url())
         self.cart.click_proceed_to_checkout_button()
+        # Verify Checkout page is loaded
+        self.assertTrue(self.checkout.check_url())
         self.assertTrue(self.checkout.get_address_details_header_element().is_displayed())
         self.assertTrue(self.checkout.get_review_order_header_element().is_displayed())
         checkout_product1_name = self.checkout.cart_contents.get_specific_cart_product_name_by_id(product1_id)
@@ -931,6 +1122,8 @@ class TestAutomationExercise(TestCase):
         cvc = '123'
         expiry_month = '12'
         expiry_year = '2028'
+        # Verify Payment page is loaded
+        self.assertTrue(self.payment.check_url())
         self.payment.set_name_on_card_field(name_on_card)
         self.payment.set_card_number_field(card_number)
         self.payment.set_cvc_field(cvc)
@@ -938,6 +1131,8 @@ class TestAutomationExercise(TestCase):
         self.payment.set_expiry_year_field(expiry_year)
         is_success_message_displayed = self.payment.click_pay_and_confirm_order_button()
         self.assertTrue(is_success_message_displayed)
+        # Verify Payment Done page is loaded
+        self.assertTrue(self.payment_done.check_url())
         self.payment_done.click_download_invoice_button()
         expected_filename = 'invoice.txt'
         downloaded_file_path = os.path.join(self.download_path, expected_filename)
@@ -952,10 +1147,14 @@ class TestAutomationExercise(TestCase):
         self.assertTrue(is_file_downloaded)
         self.payment_done.click_continue_button()
         self.payment_done.navbar.click_navbar_item('Delete Account')
+        # Verify Account Deleted page is loaded
+        self.assertTrue(self.account_deleted.check_url())
         self.assertTrue(self.account_deleted.get_account_deleted_header().is_displayed())
         self.account_deleted.click_continue_button()
 
     def test_verify_scroll_up_using_arrow_button_and_scroll_down(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         self.assertEqual(self.home.subscription.get_footer_element_header().text, 'SUBSCRIPTION')
@@ -968,6 +1167,8 @@ class TestAutomationExercise(TestCase):
         self.assertEqual(slider_item_second_header_text, 'Full-Fledged practice website for Automation Engineers')
 
     def test_verify_scroll_up_without_arrow_button_and_scroll_down(self):
+        # Verify Home page is loaded
+        self.assertTrue(self.home.check_url())
         self.assertTrue(self.home.get_slider_element().is_displayed())
         self.wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         self.assertEqual(self.home.subscription.get_footer_element_header().text, 'SUBSCRIPTION')

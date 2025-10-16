@@ -1,6 +1,8 @@
 # from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common.exceptions
 
 from page_classes.base_page import BasePage
 
@@ -9,7 +11,12 @@ class AccountDeleted(BasePage):
         super().__init__(wd, base_url)
 
     def check_url(self):
-        return self.wd.current_url == f'{self.base_url}delete_account'
+        try:
+            self.wait.until(EC.url_contains('delete_account'))
+            return self.wd.current_url == f'{self.base_url}delete_account'
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Account Deleted page was not loaded properly!')
+            raise
 
     def get_account_deleted_header(self):
         if not self.check_url():

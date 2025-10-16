@@ -1,6 +1,8 @@
 # from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common.exceptions
 
 from page_classes.base_page import BasePage
 from element_classes.cart_contents import CartContents
@@ -13,7 +15,12 @@ class Cart(BasePage):
         self.breadcrumbs = Breadcrumbs(self.wd, self.base_url)
 
     def check_url(self):
-        return self.wd.current_url == f'{self.base_url}view_cart'
+        try:
+            self.wait.until(EC.url_contains('view_cart'))
+            return self.wd.current_url == f'{self.base_url}view_cart'
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Cart page was not loaded properly!')
+            raise
 
     def get_empty_cart_element(self):
         return self.find_element(By.ID, 'empty_cart')

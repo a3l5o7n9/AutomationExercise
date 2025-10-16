@@ -1,6 +1,8 @@
 # from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common.exceptions
 
 from page_classes.base_page import BasePage
 from element_classes.cart_contents import CartContents
@@ -11,7 +13,12 @@ class Checkout(BasePage):
         self.cart_contents = CartContents(self.wd, self.base_url, 'checkout')
 
     def check_url(self):
-        return self.wd.current_url == f'{self.base_url}checkout'
+        try:
+            self.wait.until(EC.url_contains('checkout'))
+            return self.wd.current_url == f'{self.base_url}checkout'
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Checkout page was not loaded properly!')
+            raise
 
     def get_address_details_header_element(self):
         return self.find_element(By.XPATH, ".//div[@class='step-one'][1]")

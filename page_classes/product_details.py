@@ -1,12 +1,22 @@
 # from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common.exceptions
 
 from page_classes.base_page import BasePage
 
 class ProductDetails(BasePage):
     def __init__(self, wd: WebDriver, base_url):
         super().__init__(wd, base_url)
+
+    def check_url(self):
+        try:
+            self.wait.until(EC.url_contains('product_details'))
+            return f'{self.base_url}product_details' in self.wd.current_url
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Product Details page was not loaded properly!')
+            raise
 
     def get_product_information_element(self):
         return self.find_element(By.XPATH,"//div[@class='product-information'][1]")

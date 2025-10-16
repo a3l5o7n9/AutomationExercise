@@ -15,7 +15,12 @@ class Home(BasePage):
         self.filters_menu = FiltersMenu(self.wd, self.base_url)
 
     def check_url(self):
-        return self.wd.current_url == f'{self.base_url}'
+        try:
+            self.wait.until(EC.url_to_be(self.base_url))
+            return self.wd.current_url == f'{self.base_url}'
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Home page was not loaded properly!')
+            raise
 
     def get_slider_element(self):
         try:

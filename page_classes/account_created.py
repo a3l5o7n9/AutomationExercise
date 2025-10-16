@@ -1,6 +1,8 @@
 # from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common.exceptions
 
 from page_classes.base_page import BasePage
 
@@ -9,7 +11,12 @@ class AccountCreated(BasePage):
         super().__init__(wd, base_url)
 
     def check_url(self):
-        return self.wd.current_url == f'{self.base_url}account_created'
+        try:
+            self.wait.until(EC.url_contains('account_created'))
+            return self.wd.current_url == f'{self.base_url}account_created'
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Account Created page was not loaded properly!')
+            raise
 
     def get_account_created_header(self):
         if not self.check_url():

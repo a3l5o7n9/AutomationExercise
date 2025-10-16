@@ -32,6 +32,8 @@ class NavBar(BaseElement):
             raise
         except selenium.common.exceptions.NoSuchElementException as e:
             raise
+        except AttributeError as e:
+            raise
 
     def click_logo(self):
         self.google_ads_elements.hide_ads()
