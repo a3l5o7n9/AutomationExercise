@@ -9,7 +9,6 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
-# import selenium.common.exceptions
 from object_classes.user import User
 from helper_functions.api_actions import check_existence_of_user_via_api, create_user_via_api, delete_user_via_api
 from helper_functions.empty_cart_gui import empty_cart

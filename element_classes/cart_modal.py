@@ -1,4 +1,5 @@
 # from selenium.webdriver.firefox.webdriver import WebDriver
+import selenium.common.exceptions
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,8 +12,12 @@ class CartModal:
         self.wait = WebDriverWait(self.wd, 10)
 
     def get_cart_modal(self):
-        modal_element = self.wait.until(EC.visibility_of_element_located((By.ID, 'cartModal')))
-        return modal_element
+        try:
+            modal_element = self.wait.until(EC.visibility_of_element_located((By.ID, 'cartModal')))
+            return modal_element
+        except selenium.common.exceptions.TimeoutException as e:
+            print('Timeout. Cart Modal was not displayed properly')
+            raise
 
     def click_continue_in_modal(self):
         modal_element = self.get_cart_modal()
