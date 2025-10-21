@@ -1,5 +1,5 @@
 import requests
-
+from requests.exceptions import ConnectionError, ReadTimeout, ConnectTimeout
 from object_classes.user import User
 
 def check_existence_of_user_via_api(user:User):
@@ -11,12 +11,11 @@ def check_existence_of_user_via_api(user:User):
     }
 
     try:
-        response = requests.post(url, data=form_data)
+        response = requests.post(url, data=form_data, timeout=(1, 2))
         # print("Exiting 'check_existence_of_user_via_api()'")
         return '"responseCode": 200' in response.text
-    except requests.exceptions.ConnectionError as e:
-        print("Exception in 'check_existence_of_user_via_api()': Connection Error")
-        print(e.msg)
+    except (ConnectionError, TimeoutError, ReadTimeout, ConnectTimeout) as e:
+        print(f"Exception in 'check_existence_of_user_via_api()': {e}")
         raise
         # print("Exiting 'check_existence_of_user_via_api()'")
 
@@ -44,12 +43,11 @@ def create_user_via_api(user:User):
     }
 
     try:
-        response = requests.post(url, data=form_data)
+        response = requests.post(url, data=form_data, timeout=(1, 2))
         # print("Exiting 'create_user_via_api()'")
         return '"responseCode": 201' in response.text
-    except requests.exceptions.ConnectionError as e:
-        print("Exception in 'create_user_via_api()': Connection Error")
-        print(e.msg)
+    except (ConnectionError, TimeoutError, ReadTimeout, ConnectTimeout) as e:
+        print(f"Exception in 'create_user_via_api()': {e}")
         raise
         # print("Exiting 'create_user_via_api()'")
 
@@ -62,11 +60,10 @@ def delete_user_via_api(user:User):
     }
 
     try:
-        response = requests.delete(url, data=form_data)
+        response = requests.delete(url, data=form_data, timeout=(1, 2))
         # print("Exiting 'delete_user_via_api()'")
         return '"responseCode": 200' in response.text
-    except requests.exceptions.ConnectionError as e:
-        print("Exception in 'delete_user_via_api()': Connection Error")
-        print(e.msg)
+    except (ConnectionError, TimeoutError, ReadTimeout, ConnectTimeout) as e:
+        print(f"Exception in 'delete_user_via_api()': {e}")
         raise
         # print("Exiting 'delete_user_via_api()'")

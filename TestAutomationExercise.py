@@ -3,6 +3,8 @@ import os
 from time import sleep, time
 
 import selenium.common.exceptions
+from requests.exceptions import ReadTimeout, ConnectTimeout, ConnectionError
+from urllib3.exceptions import ReadTimeoutError
 # from selenium.webdriver.firefox.webdriver import WebDriver
 # from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -46,16 +48,20 @@ class TestAutomationExercise(TestCase):
 
         self.base_url = 'https://automationexercise.com/'
 
-        if check_existence_of_user_via_api(self.user1):
-            delete_user_via_api(self.user1)
+        try:
+            if check_existence_of_user_via_api(self.user1):
+                delete_user_via_api(self.user1)
 
-        if check_existence_of_user_via_api(self.user2):
-            delete_user_via_api(self.user2)
+            if check_existence_of_user_via_api(self.user2):
+                delete_user_via_api(self.user2)
 
-        if not check_existence_of_user_via_api(self.user2):
-            create_user_via_api(self.user2)
+            if not check_existence_of_user_via_api(self.user2):
+                create_user_via_api(self.user2)
 
-        empty_cart(self.base_url)
+            empty_cart(self.base_url)
+        except (ReadTimeoutError, ConnectionError, TimeoutError, ReadTimeout, ConnectTimeout) as e:
+            print(f'Exception in setUp(): {e}')
+            raise
 
         prefs = {
             "download.default_directory": self.download_path,
@@ -214,6 +220,8 @@ class TestAutomationExercise(TestCase):
         self.login.set_signup_name_field(username)
         self.login.set_signup_email_field(self.user2.email)
         self.login.click_signup_submit_button()
+        # Verify user was NOT transferred to home page
+        self.assertNotEqual(self.wd.current_url, self.base_url)
         self.assertTrue(self.login.get_signup_error_element().is_displayed())
 
     def test_contact_us_form(self):
@@ -1181,9 +1189,14 @@ class TestAutomationExercise(TestCase):
 
     def tearDown(self):
         # print("Entered 'tearDown()'")
-        self.wd.quit()
-        if check_existence_of_user_via_api(self.user2):
-            delete_user_via_api(self.user2)
+        if self.wd:
+            self.wd.quit()
+        try:
+            if check_existence_of_user_via_api(self.user2):
+                delete_user_via_api(self.user2)
+        except (ReadTimeoutError, ConnectionError, TimeoutError, ReadTimeout, ConnectTimeout) as e:
+            print(f'Exception in tearDown(): {e}')
+            raise
 
         if os.path.exists(f'{self.download_path}\\invoice.txt'):
             os.remove(f'{self.download_path}\\invoice.txt')

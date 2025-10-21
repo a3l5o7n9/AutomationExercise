@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from urllib3.exceptions import ReadTimeoutError
 
 class BaseElement:
     def __init__(self, wd:WebDriver):
@@ -17,6 +18,10 @@ class BaseElement:
             return page_ready_state == 'complete'
         except selenium.common.exceptions.TimeoutException as e:
             raise
+        except ReadTimeoutError as e:
+            raise
+        except TimeoutError as e:
+            raise
 
     def is_page_displayed(self):
         try:
@@ -24,6 +29,10 @@ class BaseElement:
                 page_body_element = self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'body')))
                 return page_body_element.is_displayed()
         except selenium.common.exceptions.TimeoutException as e:
+            raise
+        except ReadTimeoutError as e:
+            raise
+        except TimeoutError as e:
             raise
 
     def find_element(self, locator_type, element_locator:str, start_element:WebElement = None):
@@ -38,4 +47,8 @@ class BaseElement:
                 # return self.wd.find_element(locator_type, element_locator)
             except selenium.common.exceptions.TimeoutException as e:
                 print('Connection timed out. The website stopped responding.')
+                raise
+            except ReadTimeoutError as e:
+                raise
+            except TimeoutError as e:
                 raise
